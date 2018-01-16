@@ -1,8 +1,5 @@
 package cc.colorcat.netbird
 
-import java.util.*
-import kotlin.collections.ArrayList
-
 /**
  * Created by cxx on 2018/1/15.
  * xx.ch@outlook.com
@@ -11,19 +8,14 @@ internal class Pair private constructor(private val names: MutableList<String>,
                                         private val values: MutableList<String>,
                                         private val comparator: Comparator<String>) {
     companion object {
-        fun ofWithIgnoreCase(names: MutableList<String>, values: MutableList<String>)
-                = of(names, values, String.CASE_INSENSITIVE_ORDER)
-
-        fun of(names: MutableList<String>, values: MutableList<String>, comparator: Comparator<String> = kotlin.Comparator { o1, o2 -> o1.compareTo(o2) }): Pair {
+        fun of(names: MutableList<String>, values: MutableList<String>, comparator: Comparator<String> = Comparator { o1, o2 -> o1.compareTo(o2) }): Pair {
             if (names.size != values.size) {
                 throw IllegalArgumentException("names.size != values.size")
             }
             return Pair(names, values, comparator)
         }
 
-        fun create(initCapacity: Int, comparator: Comparator<String> = kotlin.Comparator { o1, o2 -> o1.compareTo(o2) }): Pair {
-            return Pair(ArrayList(initCapacity), ArrayList(initCapacity), comparator)
-        }
+        fun create(initCapacity: Int, comparator: Comparator<String> = Comparator { o1, o2 -> o1.compareTo(o2) }) = Pair(ArrayList(initCapacity), ArrayList(initCapacity), comparator)
     }
 
     val size
@@ -31,6 +23,7 @@ internal class Pair private constructor(private val names: MutableList<String>,
 
     val isEmpty
         get() = names.isEmpty()
+
 
     fun names(): List<String> {
         return names.toList()
@@ -49,7 +42,7 @@ internal class Pair private constructor(private val names: MutableList<String>,
     }
 
     fun value(name: String): String? {
-        return names.indices.firstOrNull { equal(name, names[it]) }?.let { return values[it] }
+        return names.indices.firstOrNull { equal(name, names[it]) }?.let { values[it] }
     }
 
     fun value(name: String, defaultValue: String): String {
@@ -74,7 +67,7 @@ internal class Pair private constructor(private val names: MutableList<String>,
     }
 
     fun set(name: String, value: String) {
-        remove(name)
+        removeAll(name)
         add(name, value)
     }
 
@@ -84,7 +77,7 @@ internal class Pair private constructor(private val names: MutableList<String>,
         }
     }
 
-    fun remove(name: String) {
+    fun removeAll(name: String) {
         for (index in names.lastIndex downTo 0) {
             if (equal(name, names[index])) {
                 names.removeAt(index)
