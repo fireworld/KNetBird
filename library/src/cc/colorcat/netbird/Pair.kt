@@ -4,18 +4,19 @@ package cc.colorcat.netbird
  * Created by cxx on 2018/1/15.
  * xx.ch@outlook.com
  */
-internal class Pair private constructor(private val names: MutableList<String>,
-                                        private val values: MutableList<String>,
-                                        private val comparator: Comparator<String>) {
+internal open class Pair protected constructor(
+        protected open val names: List<String>,
+        protected open val values: List<String>,
+        private val comparator: Comparator<String>
+) {
+
     companion object {
-        fun of(names: MutableList<String>, values: MutableList<String>, comparator: Comparator<String> = Comparator { o1, o2 -> o1.compareTo(o2) }): Pair {
+        internal fun of(names: List<String>, values: List<String>, comparator: Comparator<String> = Comparator { o1, o2 -> o1.compareTo(o2) }): Pair {
             if (names.size != values.size) {
                 throw IllegalArgumentException("names.size != values.size")
             }
-            return Pair(names, values, comparator)
+            return Pair(names.toImmutableList(), values.toImmutableList(), comparator)
         }
-
-        fun create(initCapacity: Int, comparator: Comparator<String> = Comparator { o1, o2 -> o1.compareTo(o2) }) = Pair(ArrayList(initCapacity), ArrayList(initCapacity), comparator)
     }
 
     val size
@@ -25,12 +26,12 @@ internal class Pair private constructor(private val names: MutableList<String>,
         get() = names.isEmpty()
 
 
-    fun names(): List<String> {
-        return names.toList()
+    open fun names(): List<String> {
+        return names
     }
 
-    fun values(): List<String> {
-        return values.toList()
+    open fun values(): List<String> {
+        return values
     }
 
     fun name(index: Int): String {
@@ -53,62 +54,11 @@ internal class Pair private constructor(private val names: MutableList<String>,
         return names.indices.filter { equal(name, names[it]) }.map { values[it] }
     }
 
-    fun add(name: String, value: String) {
-        names.add(name)
-        values.add(value)
-    }
-
-    fun addAll(names: List<String>, values: List<String>) {
-        if (names.size != values.size) {
-            throw IllegalArgumentException("names.size != values.size")
-        }
-        this.names.addAll(names)
-        this.values.addAll(values)
-    }
-
-    fun set(name: String, value: String) {
-        removeAll(name)
-        add(name, value)
-    }
-
-    fun addIfNot(name: String, value: String) {
-        if (!contains(name)) {
-            add(name, value)
-        }
-    }
-
-    fun removeAll(name: String) {
-        for (index in names.lastIndex downTo 0) {
-            if (equal(name, names[index])) {
-                names.removeAt(index)
-                values.removeAt(index)
-            }
-        }
-    }
-
-    fun contains(name: String): Boolean {
-        return names.any { equal(name, it) }
-    }
-
-    fun clear() {
-        names.clear()
-        values.clear()
-    }
-
     fun nameSet(): Set<String> {
         return names.toSortedSet(comparator)
     }
 
-    fun toMultimap(): Map<String, List<String>> {
-        if (names.isEmpty()) return emptyMap()
-        val result = mutableMapOf<String, List<String>>()
-        for (name in nameSet()) {
-            result[name] = values(name)
-        }
-        return result.toMap()
-    }
-
-    private fun equal(str1: String, str2: String): Boolean {
+    protected fun equal(str1: String, str2: String): Boolean {
         return comparator.compare(str1, str2) == 0
     }
 }
