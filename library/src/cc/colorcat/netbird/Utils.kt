@@ -2,6 +2,7 @@ package cc.colorcat.netbird
 
 import java.nio.charset.Charset
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by cxx on 2018/1/16.
@@ -18,3 +19,11 @@ fun parseCharset(contentType: String?): Charset? {
 fun <T> List<T>.toImmutableList(): List<T> {
     return Collections.unmodifiableList(ArrayList(this))
 }
+
+fun <K, V> Map<K, V>.toImmutableMap(): Map<K, V> {
+    return Collections.unmodifiableMap(HashMap(this))
+}
+
+internal val String.Companion.CASE_SENSITIVE_ORDER: Comparator<String>
+    get() = kotlin.Comparator { o1, o2 -> o1.compareTo(o2) }
+

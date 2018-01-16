@@ -9,14 +9,15 @@ internal open class Pair protected constructor(
         protected open val values: List<String>,
         private val comparator: Comparator<String>
 ) {
-
     companion object {
-        internal fun of(names: List<String>, values: List<String>, comparator: Comparator<String> = Comparator { o1, o2 -> o1.compareTo(o2) }): Pair {
+        internal fun of(names: List<String>, values: List<String>, comparator: Comparator<String> = String.CASE_SENSITIVE_ORDER): Pair {
             if (names.size != values.size) {
                 throw IllegalArgumentException("names.size != values.size")
             }
             return Pair(names.toImmutableList(), values.toImmutableList(), comparator)
         }
+
+        internal val emptyPair = Pair(emptyList(), emptyList(), String.CASE_SENSITIVE_ORDER)
     }
 
     val size
@@ -58,7 +59,33 @@ internal open class Pair protected constructor(
         return names.toSortedSet(comparator)
     }
 
+    operator fun contains(name: String): Boolean {
+        return names.any { equal(name, it) }
+    }
+
     protected fun equal(str1: String, str2: String): Boolean {
         return comparator.compare(str1, str2) == 0
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Pair
+
+        if (names != other.names) return false
+        if (values != other.values) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = names.hashCode()
+        result = 31 * result + values.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "Pair(names=$names, values=$values)"
     }
 }
