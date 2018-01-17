@@ -22,37 +22,25 @@ internal open class Pair internal constructor(
         get() = names.isEmpty()
 
 
-    open fun names(): List<String> {
-        return names
-    }
+    open fun names() = names
 
-    open fun values(): List<String> {
-        return values
-    }
+    open fun values() = values
 
-    fun name(index: Int): String {
-        return names[index]
-    }
+    fun name(index: Int) = names[index]
 
-    fun value(index: Int): String {
-        return values[index]
-    }
+    fun value(index: Int) = values[index]
 
     fun value(name: String): String? {
         return names.indices.firstOrNull { equal(name, names[it]) }?.let { values[it] }
     }
 
-    fun value(name: String, defaultValue: String): String {
-        return value(name) ?: defaultValue
-    }
+    fun value(name: String, defaultValue: String) = value(name) ?: defaultValue
 
     fun values(name: String): List<String> {
         return names.indices.filter { equal(name, names[it]) }.map { values[it] }
     }
 
-    fun nameSet(): Set<String> {
-        return names.toSortedSet(comparator)
-    }
+    fun nameSet(): Set<String> = names.toSortedSet(comparator)
 
     fun toMultimap(): Map<String, List<String>> {
         if (names.isEmpty()) return emptyMap()
@@ -65,13 +53,9 @@ internal open class Pair internal constructor(
 
     fun toMutablePair() = MutablePair(names.toMutableList(), values.toMutableList(), comparator)
 
-    operator fun contains(name: String): Boolean {
-        return names.any { equal(name, it) }
-    }
+    operator fun contains(name: String) = names.any { equal(name, it) }
 
-    protected fun equal(str1: String, str2: String): Boolean {
-        return comparator.compare(str1, str2) == 0
-    }
+    protected fun equal(str1: String, str2: String) = comparator.compare(str1, str2) == 0
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

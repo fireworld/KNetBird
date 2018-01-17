@@ -1,8 +1,7 @@
 package cc.colorcat.netbird
 
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream
+import cc.colorcat.netbird.internal.ByteOutputStream
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 import java.io.OutputStream
 
 /**
@@ -18,9 +17,7 @@ class FormBody private constructor(val parameters: Parameters) : RequestBody() {
 
     private var contentLength = -1L
 
-    override fun contentType(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun contentType() = FormBody.CONTENT_TYPE
 
     override fun contentLength(): Long {
         return super.contentLength()
@@ -30,28 +27,25 @@ class FormBody private constructor(val parameters: Parameters) : RequestBody() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-//    private fun writeOrCountBytes(os: OutputStream?, countBytes: Boolean): Long {
-//        var byteCount = 0L
-//
-//        val o = if (countBytes) ByteArrayOutputStream() else os
-//        val bos = ByteOutputStream(o)
-//
-//        var i = 0
-//        val size = parameters.size()
-//        while (i < size) {
-//            if (i > 0) bos.writeByte('&')
-//            bos.writeUtf8(namesAndValues.name(i))
-//            bos.writeByte('=')
-//            bos.writeUtf8(namesAndValues.value(i))
-//            i++
-//        }
-//        bos.flush()
-//
-//        if (countBytes) {
-//            byteCount = bos.size()
-//            bos.close()
-//        }
-//
-//        return byteCount
-//    }
+    private fun writeOrCountBytes(os: OutputStream, countBytes: Boolean): Long {
+        var byteCount = 0L
+
+        val o = if (countBytes) ByteArrayOutputStream() else os
+        val bos = ByteOutputStream(o)
+
+        for (i in 0 until parameters.size) {
+            if (i > 0) bos.writeByte('&')
+            bos.writeUtf8(parameters.name(i))
+            bos.writeByte('=')
+            bos.writeUtf8(parameters.value(i))
+        }
+        bos.flush()
+
+        if (countBytes) {
+            byteCount = bos.size()
+            bos.close()
+        }
+
+        return byteCount
+    }
 }

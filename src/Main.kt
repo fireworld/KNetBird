@@ -10,5 +10,7 @@ fun <T> List<T>.toImmutableList(): List<T> {
 }
 
 fun main(args: Array<String>) {
-    val test = mutableMapOf("a" to 1, "b" to 2)
+    for (i in 0 until 0) {
+        println("hello i = $i")
+    }
 }

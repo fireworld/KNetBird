@@ -15,13 +15,9 @@ internal class MutablePair internal constructor(
             comparator: Comparator<String>
     ) : this(ArrayList(initCapacity), ArrayList(initCapacity), comparator)
 
-    override fun names(): List<String> {
-        return names.toImmutableList()
-    }
+    override fun names() = names.toImmutableList()
 
-    override fun values(): List<String> {
-        return values.toImmutableList()
-    }
+    override fun values() = values.toImmutableList()
 
     fun add(name: String, value: String) {
         names.add(name)
@@ -42,7 +38,7 @@ internal class MutablePair internal constructor(
     }
 
     fun addIfNot(name: String, value: String) {
-        if (!contains(name)) {
+        if (name !in this) {
             add(name, value)
         }
     }
