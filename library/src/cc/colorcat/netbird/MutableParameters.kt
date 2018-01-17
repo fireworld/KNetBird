@@ -3,10 +3,10 @@ package cc.colorcat.netbird
 import cc.colorcat.netbird.internal.MutablePair
 
 /**
- * Created by cxx on 2018/1/16.
+ * Created by cxx on 2018/1/17.
  * xx.ch@outlook.com
  */
-class MutableHeaders internal constructor(override val pair: MutablePair) : Headers(pair) {
+class MutableParameters internal constructor(override val pair: MutablePair) : Parameters(pair) {
 
     fun add(name: String, value: String) = pair.add(name, value)
 
@@ -20,14 +20,14 @@ class MutableHeaders internal constructor(override val pair: MutablePair) : Head
 
     fun clear() = pair.clear()
 
-    fun toHeaders() = Headers(pair.toPair())
+    fun toParameters() = Parameters(pair.toPair())
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         if (!super.equals(other)) return false
 
-        other as MutableHeaders
+        other as MutableParameters
 
         if (pair != other.pair) return false
 
@@ -41,6 +41,6 @@ class MutableHeaders internal constructor(override val pair: MutablePair) : Head
     }
 
     override fun toString(): String {
-        return "MutableHeaders(pair=$pair)"
+        return "MutableParameters(pair=$pair)"
     }
 }

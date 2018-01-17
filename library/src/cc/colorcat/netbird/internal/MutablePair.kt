@@ -1,14 +1,19 @@
-package cc.colorcat.netbird
+package cc.colorcat.netbird.internal
 
 /**
  * Created by cxx on 2018/1/16.
  * xx.ch@outlook.com
  */
-internal class MutablePair private constructor(
+internal class MutablePair internal constructor(
         override val names: MutableList<String>,
         override val values: MutableList<String>,
         comparator: Comparator<String>
 ) : Pair(names, values, comparator) {
+
+    internal constructor(
+            initCapacity: Int,
+            comparator: Comparator<String>
+    ) : this(ArrayList(initCapacity), ArrayList(initCapacity), comparator)
 
     override fun names(): List<String> {
         return names.toImmutableList()
@@ -55,6 +60,8 @@ internal class MutablePair private constructor(
         names.clear()
         values.clear()
     }
+
+    fun toPair() = Pair(names.toImmutableList(), values.toImmutableList(), comparator)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

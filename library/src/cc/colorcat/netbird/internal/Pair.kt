@@ -1,23 +1,18 @@
-package cc.colorcat.netbird
+package cc.colorcat.netbird.internal
+
+import java.util.*
 
 /**
  * Created by cxx on 2018/1/15.
  * xx.ch@outlook.com
  */
-internal open class Pair protected constructor(
+internal open class Pair internal constructor(
         protected open val names: List<String>,
         protected open val values: List<String>,
-        private val comparator: Comparator<String>
+        protected val comparator: Comparator<String>
 ) {
     companion object {
-        internal fun of(names: List<String>, values: List<String>, comparator: Comparator<String> = String.CASE_SENSITIVE_ORDER): Pair {
-            if (names.size != values.size) {
-                throw IllegalArgumentException("names.size != values.size")
-            }
-            return Pair(names.toImmutableList(), values.toImmutableList(), comparator)
-        }
-
-        internal val emptyPair = Pair(emptyList(), emptyList(), String.CASE_SENSITIVE_ORDER)
+        internal val emptyPair = Pair(emptyList(), emptyList(), String.CASE_INSENSITIVE_ORDER)
     }
 
     val size
@@ -58,6 +53,17 @@ internal open class Pair protected constructor(
     fun nameSet(): Set<String> {
         return names.toSortedSet(comparator)
     }
+
+    fun toMultimap(): Map<String, List<String>> {
+        if (names.isEmpty()) return emptyMap()
+        val result = HashMap<String, List<String>>()
+        for (name in names) {
+            result[name] = values(name)
+        }
+        return Collections.unmodifiableMap(result)
+    }
+
+    fun toMutablePair() = MutablePair(names.toMutableList(), values.toMutableList(), comparator)
 
     operator fun contains(name: String): Boolean {
         return names.any { equal(name, it) }
