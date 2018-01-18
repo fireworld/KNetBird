@@ -1,4 +1,4 @@
-import cc.colorcat.netbird.internal.headersOf
+import cc.colorcat.netbird.internal.mutableHeadersOf
 import java.util.*
 
 /**
@@ -22,11 +22,19 @@ fun main(args: Array<String>) {
 //    headers.clear()
 //    println(headers)
 
-    val names = mutableListOf("a", "b", "c")
+    val names = mutableListOf("this", "is", "test")
     val values = mutableListOf("1", "2", "3")
-    val headers = headersOf(names, values)
+    val headers = mutableHeadersOf(names, values)
 //    println(headers)
-//    for ((name, value) in headers) {
-//        println("name = $name, value = $value")
-//    }
+    for ((name, value) in headers) {
+        println("name = $name, value = $value")
+    }
+    println("-------------")
+//    headers.filter { it.name.length > 3 }.forEach { println(it) }
+    val itr = headers.iterator()
+    while (itr.hasNext()) {
+        if (itr.next().name.length > 3) {
+            itr.remove()
+        }
+    }
 }

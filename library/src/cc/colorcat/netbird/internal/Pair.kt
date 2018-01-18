@@ -58,6 +58,31 @@ internal open class Pair internal constructor(
 
     protected fun equal(str1: String, str2: String) = comparator.compare(str1, str2) == 0
 
+    override fun iterator(): Iterator<NameAndValue> = PairIterator()
+
+    inner class PairIterator : Iterator<NameAndValue> {
+        private val namesItr = names.iterator()
+        private val valuesItr = values.iterator()
+
+        override fun hasNext(): Boolean {
+            val result = namesItr.hasNext()
+            check()
+            return result
+        }
+
+        override fun next(): NameAndValue {
+            val result = NameAndValue(namesItr.next(), valuesItr.next())
+            check()
+            return result
+        }
+
+        private fun check() {
+            if (names.size != values.size) {
+                throw ConcurrentModificationException()
+            }
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

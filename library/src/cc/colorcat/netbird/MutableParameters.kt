@@ -1,6 +1,7 @@
 package cc.colorcat.netbird
 
 import cc.colorcat.netbird.internal.MutablePair
+import cc.colorcat.netbird.internal.NameAndValue
 import cc.colorcat.netbird.internal.PairWriter
 
 /**
@@ -21,6 +22,10 @@ class MutableParameters internal constructor(override val pair: MutablePair) : P
         if (pair != other.pair) return false
 
         return true
+    }
+
+    override fun iterator(): MutableIterator<NameAndValue> {
+        return pair.iterator()
     }
 
     override fun hashCode(): Int {

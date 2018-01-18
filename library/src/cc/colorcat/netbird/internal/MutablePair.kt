@@ -1,5 +1,7 @@
 package cc.colorcat.netbird.internal
 
+import java.util.*
+
 /**
  * Created by cxx on 2018/1/16.
  * xx.ch@outlook.com
@@ -58,6 +60,38 @@ internal class MutablePair internal constructor(
     }
 
     fun toPair() = Pair(names.toImmutableList(), values.toImmutableList(), comparator)
+
+    override fun iterator(): MutableIterator<NameAndValue> = MutablePairIterator()
+
+    inner class MutablePairIterator : MutableIterator<NameAndValue> {
+        private val namesItr = names.listIterator()
+        private val valuesItr = values.listIterator()
+
+        override fun hasNext(): Boolean {
+            val result = namesItr.hasNext()
+            check()
+            return result
+        }
+
+        override fun next(): NameAndValue {
+            val result = NameAndValue(namesItr.next(), valuesItr.next())
+            check()
+            return result
+        }
+
+        override fun remove() {
+            check()
+            namesItr.remove()
+            valuesItr.remove()
+            check()
+        }
+
+        private fun check() {
+            if (names.size != values.size) {
+                throw ConcurrentModificationException()
+            }
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

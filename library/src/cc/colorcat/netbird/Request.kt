@@ -175,6 +175,17 @@ open class Request(builder: Builder) {
             return this
         }
 
+        open fun replace(parameters: Parameters): Builder {
+            this.parameters.clear()
+            this.parameters.addAll(parameters.names(), parameters.values())
+            return this
+        }
+
+        open fun add(parameters: Parameters): Builder {
+            this.parameters.addAll(parameters.names(), parameters.values())
+            return this
+        }
+
         open fun add(name: String, value: String): Builder {
             parameters.add(name, value)
             return this
@@ -182,6 +193,11 @@ open class Request(builder: Builder) {
 
         open fun addIfNot(name: String, value: String): Builder {
             parameters.addIfNot(name, value)
+            return this
+        }
+
+        open fun addAll(names: List<String>, values: List<String>): Builder {
+            parameters.addAll(names, values)
             return this
         }
 
@@ -212,21 +228,37 @@ open class Request(builder: Builder) {
             return this
         }
 
+        open fun replaceHeaders(headers: Headers): Builder {
+            this.headers.clear()
+            this.headers.addAll(headers.names(), headers.values())
+            return this
+        }
+
+        open fun addHeader(headers: Headers): Builder {
+            this.headers.addAll(headers.names(), headers.values())
+            return this
+        }
+
         open fun addHeader(name: String, value: String): Builder {
             checkHeader(name, value)
             headers.add(name, value)
             return this
         }
 
-        open fun setHeader(name: String, value: String): Builder {
-            checkHeader(name, value)
-            headers.set(name, value)
-            return this
-        }
-
         open fun addHeaderIfNot(name: String, value: String): Builder {
             checkHeader(name, value)
             headers.addIfNot(name, value)
+            return this
+        }
+
+        open fun addAllHeader(names: List<String>, values: List<String>): Builder {
+            headers.addAll(names, values)
+            return this
+        }
+
+        open fun setHeader(name: String, value: String): Builder {
+            checkHeader(name, value)
+            headers.set(name, value)
             return this
         }
 
