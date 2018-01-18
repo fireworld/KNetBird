@@ -12,5 +12,5 @@ abstract class RequestBody {
 
     open fun contentLength() = -1L
 
-    abstract fun writeTo(os: OutputStream)
+    abstract fun writeTo(output: OutputStream)
 }

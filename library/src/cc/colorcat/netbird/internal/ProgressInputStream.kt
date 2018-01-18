@@ -15,6 +15,7 @@ class ProgressInputStream private constructor(
         private val contentLength: Long,
         private val listener: ProgressListener
 ) : FilterInputStream(input) {
+
     companion object {
         internal fun wrap(file: File, listener: ProgressListener?) = wrap(FileInputStream(file), file.length(), listener)
 

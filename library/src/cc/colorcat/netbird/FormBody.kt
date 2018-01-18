@@ -1,6 +1,7 @@
 package cc.colorcat.netbird
 
 import cc.colorcat.netbird.internal.ByteOutputStream
+import cc.colorcat.netbird.internal.emptyOutputStream
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 
@@ -8,7 +9,7 @@ import java.io.OutputStream
  * Created by cxx on 18-1-17.
  * xx.ch@outlook.com
  */
-class FormBody private constructor(val parameters: Parameters) : RequestBody() {
+internal class FormBody private constructor(internal val parameters: Parameters) : RequestBody() {
 
     companion object {
         const val CONTENT_TYPE = "application/x-www-form-urlencoded"
@@ -20,18 +21,24 @@ class FormBody private constructor(val parameters: Parameters) : RequestBody() {
     override fun contentType() = FormBody.CONTENT_TYPE
 
     override fun contentLength(): Long {
-        return super.contentLength()
+        if (contentLength == -1L) {
+            val length = writeOrCountBytes(emptyOutputStream, true)
+            if (length > 0L) {
+                contentLength = length
+            }
+        }
+        return contentLength
     }
 
-    override fun writeTo(os: OutputStream) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun writeTo(output: OutputStream) {
+        writeOrCountBytes(output, false)
     }
 
-    private fun writeOrCountBytes(os: OutputStream, countBytes: Boolean): Long {
+    private fun writeOrCountBytes(output: OutputStream, countBytes: Boolean): Long {
         var byteCount = 0L
 
-        val o = if (countBytes) ByteArrayOutputStream() else os
-        val bos = ByteOutputStream(o)
+        val os = if (countBytes) ByteArrayOutputStream() else output
+        val bos = ByteOutputStream(os)
 
         for (i in 0 until parameters.size) {
             if (i > 0) bos.writeByte('&')
@@ -47,5 +54,24 @@ class FormBody private constructor(val parameters: Parameters) : RequestBody() {
         }
 
         return byteCount
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as FormBody
+
+        if (parameters != other.parameters) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return parameters.hashCode()
+    }
+
+    override fun toString(): String {
+        return "FormBody(parameters=$parameters)"
     }
 }

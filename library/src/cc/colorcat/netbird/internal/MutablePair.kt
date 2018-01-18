@@ -8,7 +8,7 @@ internal class MutablePair internal constructor(
         override val names: MutableList<String>,
         override val values: MutableList<String>,
         comparator: Comparator<String>
-) : Pair(names, values, comparator) {
+) : Pair(names, values, comparator), PairWriter {
 
     internal constructor(
             initCapacity: Int,
@@ -19,12 +19,18 @@ internal class MutablePair internal constructor(
 
     override fun values() = values.toImmutableList()
 
-    fun add(name: String, value: String) {
+    override fun add(name: String, value: String) {
         names.add(name)
         values.add(value)
     }
 
-    fun addAll(names: List<String>, values: List<String>) {
+    override fun addIfNot(name: String, value: String) {
+        if (name !in this) {
+            add(name, value)
+        }
+    }
+
+    override fun addAll(names: List<String>, values: List<String>) {
         if (names.size != values.size) {
             throw IllegalArgumentException("names.size != values.size")
         }
@@ -32,18 +38,12 @@ internal class MutablePair internal constructor(
         this.values.addAll(values)
     }
 
-    fun set(name: String, value: String) {
+    override fun set(name: String, value: String) {
         removeAll(name)
         add(name, value)
     }
 
-    fun addIfNot(name: String, value: String) {
-        if (name !in this) {
-            add(name, value)
-        }
-    }
-
-    fun removeAll(name: String) {
+    override fun removeAll(name: String) {
         for (index in names.lastIndex downTo 0) {
             if (equal(name, names[index])) {
                 names.removeAt(index)
@@ -52,7 +52,7 @@ internal class MutablePair internal constructor(
         }
     }
 
-    fun clear() {
+    override fun clear() {
         names.clear()
         values.clear()
     }

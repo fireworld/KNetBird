@@ -29,12 +29,11 @@ internal class ByteOutputStream(output: OutputStream) : FilterOutputStream(outpu
 
     fun writeUtf8(s: String) {
         val bytes = s.toByteArray(Charsets.UTF_8)
-        write(bytes, 0, bytes.size)
+        this.write(bytes, 0, bytes.size)
     }
 
     fun writeByte(c: Char) {
-        out.write(c.toInt())
-        incCount(1)
+        this.write(c.toInt())
     }
 
     fun size() = written

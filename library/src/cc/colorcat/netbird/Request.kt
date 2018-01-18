@@ -38,8 +38,6 @@ open class Request(builder: Builder) {
     }
 
 
-
-
     open class Builder {
         private var url: String
         private var path: String
@@ -91,17 +89,17 @@ open class Request(builder: Builder) {
 
         fun tag() = tag
 
-        fun names() = parameters.names
+        fun names() = parameters.names()
 
-        fun values() = parameters.values
+        fun values() = parameters.values()
 
         fun value(name: String) = parameters.value(name)
 
         fun value(name: String, defaultValue: String = "") = parameters.value(name, defaultValue)
 
-        fun headerNames() = headers.names
+        fun headerNames() = headers.names()
 
-        fun headerValues() = headers.values
+        fun headerValues() = headers.values()
 
         fun headerValue(name: String) = headers.value(name)
 

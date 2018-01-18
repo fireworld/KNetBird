@@ -14,11 +14,16 @@ import java.util.*
  * Created by cxx on 2018/1/17.
  * xx.ch@outlook.com
  */
+internal val emptyOutputStream = object : OutputStream() {
+    override fun write(b: Int) {}
+}
+
 private val headersComparator = String.CASE_INSENSITIVE_ORDER
 private val parametersComparator = Comparator<String> { str1, str2 -> str1.compareTo(str2) }
 
-fun headersOf(names: List<String>, values: List<String>)
-        = check(names, values, Headers.emptyHeaders) ?: Headers(Pair(names, values, headersComparator))
+fun headersOf(names: List<String>, values: List<String>): Headers {
+    return checked(names, values, Headers.emptyHeaders) ?: Headers(Pair(names, values, headersComparator))
+}
 
 fun headersOf(namesAndValues: Map<String?, List<String?>?>): Headers {
     if (namesAndValues.isEmpty()) return Headers.emptyHeaders
@@ -27,17 +32,20 @@ fun headersOf(namesAndValues: Map<String?, List<String?>?>): Headers {
 }
 
 
-fun mutableHeadersOf(names: MutableList<String>, values: MutableList<String>)
-        = check(names, values, null) ?: MutableHeaders(MutablePair(names, values, headersComparator))
+fun mutableHeadersOf(names: MutableList<String>, values: MutableList<String>): MutableHeaders {
+    return checked(names, values, null) ?: MutableHeaders(MutablePair(names, values, headersComparator))
+}
 
 fun mutableHeadersOf(initCapacity: Int) = MutableHeaders(MutablePair(initCapacity, headersComparator))
 
 
-fun parametersOf(names: List<String>, values: List<String>)
-        = check(names, values, Parameters.emptyParameters) ?: Parameters(Pair(names, values, parametersComparator))
+fun parametersOf(names: List<String>, values: List<String>): Parameters {
+    return checked(names, values, Parameters.emptyParameters) ?: Parameters(Pair(names, values, parametersComparator))
+}
 
-fun mutableParametersOf(names: MutableList<String>, values: MutableList<String>)
-        = check(names, values, null) ?: MutableParameters(MutablePair(names, values, parametersComparator))
+fun mutableParametersOf(names: MutableList<String>, values: MutableList<String>): MutableParameters {
+    return checked(names, values, null) ?: MutableParameters(MutablePair(names, values, parametersComparator))
+}
 
 fun mutableParametersOf(initCapacity: Int) = MutableParameters(MutablePair(initCapacity, parametersComparator))
 
@@ -55,20 +63,16 @@ private fun unzip(namesAndValues: Map<String?, List<String?>?>): kotlin.Pair<Lis
     return kotlin.Pair(names, values)
 }
 
-private fun <R> check(names: List<String>, values: List<String>, valueOnEmpty: R?): R? {
+private fun <R> checked(names: List<String>, values: List<String>, valueOnEmpty: R?): R? {
     if (names.size != values.size) {
         throw IllegalArgumentException("names.size != values.size")
     }
     return if (names.isEmpty()) valueOnEmpty else null
 }
 
-internal fun <T> List<T>.toImmutableList(): List<T> {
-    return Collections.unmodifiableList(ArrayList(this))
-}
+internal fun <T> List<T>.toImmutableList() = Collections.unmodifiableList(ArrayList(this))
 
-internal fun <K, V> Map<K, V>.toImmutableMap(): Map<K, V> {
-    return Collections.unmodifiableMap(HashMap(this))
-}
+internal fun <K, V> Map<K, V>.toImmutableMap() = Collections.unmodifiableMap(HashMap(this))
 
 internal fun InputStream.justDump(output: OutputStream) {
     val bis = this as? BufferedInputStream ?: BufferedInputStream(this)

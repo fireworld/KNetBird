@@ -1,6 +1,7 @@
 package cc.colorcat.netbird.internal
 
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by cxx on 2018/1/15.
@@ -10,39 +11,39 @@ internal open class Pair internal constructor(
         protected open val names: List<String>,
         protected open val values: List<String>,
         protected val comparator: Comparator<String>
-) {
+) : PairReader {
+
     companion object {
         internal val emptyPair = Pair(emptyList(), emptyList(), String.CASE_INSENSITIVE_ORDER)
     }
 
-    val size
+    final override val size: Int
         get() = names.size
 
-    val isEmpty
+    final override val isEmpty: Boolean
         get() = names.isEmpty()
 
+    override fun names() = names
 
-    open fun names() = names
+    override fun values() = values
 
-    open fun values() = values
+    final override fun name(index: Int) = names[index]
 
-    fun name(index: Int) = names[index]
+    final override fun value(index: Int) = values[index]
 
-    fun value(index: Int) = values[index]
-
-    fun value(name: String): String? {
+    final override fun value(name: String): String? {
         return names.indices.firstOrNull { equal(name, names[it]) }?.let { values[it] }
     }
 
-    fun value(name: String, defaultValue: String) = value(name) ?: defaultValue
+    final override fun value(name: String, defaultValue: String) = value(name) ?: defaultValue
 
-    fun values(name: String): List<String> {
+    final override fun values(name: String): List<String> {
         return names.indices.filter { equal(name, names[it]) }.map { values[it] }
     }
 
-    fun nameSet(): Set<String> = names.toSortedSet(comparator)
+    final override fun nameSet(): Set<String> = names.toSortedSet(comparator)
 
-    fun toMultimap(): Map<String, List<String>> {
+    final override fun toMultimap(): Map<String, List<String>> {
         if (names.isEmpty()) return emptyMap()
         val result = HashMap<String, List<String>>()
         for (name in names) {
@@ -51,9 +52,9 @@ internal open class Pair internal constructor(
         return Collections.unmodifiableMap(result)
     }
 
-    fun toMutablePair() = MutablePair(names.toMutableList(), values.toMutableList(), comparator)
+    final override fun contains(name: String) = names.any { equal(name, it) }
 
-    operator fun contains(name: String) = names.any { equal(name, it) }
+    fun toMutablePair() = MutablePair(names.toMutableList(), values.toMutableList(), comparator)
 
     protected fun equal(str1: String, str2: String) = comparator.compare(str1, str2) == 0
 
