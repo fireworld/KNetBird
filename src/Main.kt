@@ -37,4 +37,7 @@ fun main(args: Array<String>) {
             itr.remove()
         }
     }
+    for ((name, value) in headers) {
+        println("name = $name, value = $value")
+    }
 }

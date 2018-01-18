@@ -7,7 +7,7 @@ import java.io.File
  * Created by cxx on 2018/1/17.
  * xx.ch@outlook.com
  */
-open class Request(builder: Builder) {
+open class Request protected constructor(builder: Builder) {
     val url = builder.url()
     val path = builder.path()
     val method = builder.method()
