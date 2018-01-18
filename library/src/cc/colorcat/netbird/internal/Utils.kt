@@ -1,11 +1,10 @@
 package cc.colorcat.netbird.internal
 
-import cc.colorcat.netbird.FileBody
-import cc.colorcat.netbird.Parameters
 import cc.colorcat.netbird.ProgressListener
-import cc.colorcat.netbird.RequestBody
 import java.io.Closeable
 import java.io.IOException
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.nio.charset.Charset
 
 /**
@@ -46,10 +45,6 @@ internal fun parseCharset(contentType: String?): Charset? {
             ?.let { if (it.isEmpty()) null else Charset.forName(it[0][1]) }
 }
 
-internal fun parseBody(parameters: Parameters, fileBodies: List<FileBody>): RequestBody? {
-    return null
-}
-
 internal fun close(closeable: Closeable?) {
     if (closeable != null) {
         try {
@@ -59,3 +54,19 @@ internal fun close(closeable: Closeable?) {
         }
     }
 }
+
+internal fun smartEncode(s: String): String {
+    try {
+        val decoded = decode(s)
+        if (s != decoded) {
+            return s
+        }
+    } catch (e: Exception) {
+
+    }
+    return encode(s)
+}
+
+private fun encode(s: String): String = URLEncoder.encode(s, Charsets.UTF_8.name())
+
+private fun decode(s: String): String = URLDecoder.decode(s, Charsets.UTF_8.name())

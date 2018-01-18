@@ -2,6 +2,8 @@ package cc.colorcat.netbird
 
 import cc.colorcat.netbird.internal.ByteOutputStream
 import cc.colorcat.netbird.internal.emptyOutputStream
+import cc.colorcat.netbird.internal.mutableParametersOf
+import cc.colorcat.netbird.internal.smartEncode
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 
@@ -14,6 +16,19 @@ internal class FormBody private constructor(internal val parameters: Parameters)
     companion object {
         const val CONTENT_TYPE = "application/x-www-form-urlencoded"
 //        const val CONTENT_TYPE = "text/plain; charset=UTF-8"
+
+        internal fun create(namesAndValues: Parameters, needEncode: Boolean = true): FormBody {
+            if (!needEncode) {
+                return FormBody(namesAndValues)
+            }
+            val encoded = mutableParametersOf(namesAndValues.size)
+            for (i in 0 until namesAndValues.size) {
+                val name = namesAndValues.name(i)
+                val value = namesAndValues.value(i)
+                encoded.add(smartEncode(name), smartEncode(value))
+            }
+            return FormBody(encoded.toParameters())
+        }
     }
 
     private var contentLength = -1L

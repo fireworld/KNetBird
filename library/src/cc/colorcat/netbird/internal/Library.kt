@@ -70,9 +70,9 @@ private fun <R> checked(names: List<String>, values: List<String>, valueOnEmpty:
     return if (names.isEmpty()) valueOnEmpty else null
 }
 
-internal fun <T> List<T>.toImmutableList() = Collections.unmodifiableList(ArrayList(this))
+internal fun <T> List<T>.toImmutableList(): List<T> = Collections.unmodifiableList(ArrayList(this))
 
-internal fun <K, V> Map<K, V>.toImmutableMap() = Collections.unmodifiableMap(HashMap(this))
+internal fun <K, V> Map<K, V>.toImmutableMap(): Map<K, V> = Collections.unmodifiableMap(HashMap(this))
 
 internal fun InputStream.justDump(output: OutputStream) {
     val bis = this as? BufferedInputStream ?: BufferedInputStream(this)
@@ -85,4 +85,3 @@ internal fun InputStream.justDump(output: OutputStream) {
     }
     bos.flush()
 }
-

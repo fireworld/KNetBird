@@ -34,7 +34,23 @@ open class Request(builder: Builder) {
     }
 
     internal fun body(): RequestBody? {
+        if (body == null) {
+            body = parseBody()
+        }
         return body
+    }
+
+    private fun parseBody(): RequestBody? {
+        if (parameters.isEmpty && fileBodies.isEmpty()) {
+            return null
+        }
+        if (parameters.isEmpty && fileBodies.size == 1) {
+            return fileBodies[0]
+        }
+        if (!parameters.isEmpty && fileBodies.isEmpty()) {
+            FormBody.create(parameters, true)
+        }
+        return MultipartBody.create(FormBody.create(parameters, false), fileBodies, boundary)
     }
 
 

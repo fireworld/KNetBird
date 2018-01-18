@@ -25,5 +25,8 @@ fun main(args: Array<String>) {
     val names = mutableListOf("a", "b", "c")
     val values = mutableListOf("1", "2", "3")
     val headers = headersOf(names, values)
-    println(headers)
+//    println(headers)
+    for ((name, value) in headers) {
+        println("name = $name, value = $value")
+    }
 }
