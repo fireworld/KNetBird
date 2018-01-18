@@ -277,7 +277,7 @@ open class Request protected constructor(builder: Builder) {
             return this
         }
 
-        open fun clearHeaders(name: String): Builder {
+        open fun clearHeaders(): Builder {
             headers.clear()
             return this
         }
