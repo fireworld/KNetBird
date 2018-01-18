@@ -53,6 +53,12 @@ open class Request(builder: Builder) {
         return MultipartBody.create(FormBody.create(parameters, false), fileBodies, boundary)
     }
 
+    open fun newBuilder(): Builder {
+        if (freeze) {
+            throw IllegalStateException("The request has been frozen, call isFreeze to check.")
+        }
+        return Builder.newBuilder(this)
+    }
 
     open class Builder {
         private var url: String
@@ -64,6 +70,10 @@ open class Request(builder: Builder) {
         private var downloadListener: DownloadListener?
         private val boundary: String
         private var tag: Any
+
+        companion object {
+            internal fun newBuilder(request: Request) = Builder(request)
+        }
 
         constructor() {
             this.url = ""
