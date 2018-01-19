@@ -1,10 +1,7 @@
 package cc.colorcat.netbird.internal
 
 import cc.colorcat.netbird.ProgressListener
-import java.io.File
-import java.io.FileInputStream
-import java.io.FilterInputStream
-import java.io.InputStream
+import java.io.*
 
 /**
  * Created by cxx on 2018/1/17.
@@ -17,6 +14,7 @@ class ProgressInputStream private constructor(
 ) : FilterInputStream(input) {
 
     companion object {
+        @Throws(FileNotFoundException::class)
         internal fun wrap(file: File, listener: ProgressListener?) = wrap(FileInputStream(file), file.length(), listener)
 
         internal fun wrap(input: InputStream, contentLength: Long, listener: ProgressListener?) =
@@ -27,6 +25,7 @@ class ProgressInputStream private constructor(
                 }
     }
 
+    @Throws(IOException::class)
     override fun read(): Int {
         val nextByte = `in`.read()
         if (nextByte != -1) {
@@ -35,10 +34,12 @@ class ProgressInputStream private constructor(
         return nextByte
     }
 
+    @Throws(IOException::class)
     override fun read(b: ByteArray): Int {
         return this.read(b, 0, b.size)
     }
 
+    @Throws(IOException::class)
     override fun read(b: ByteArray, off: Int, len: Int): Int {
         val count = `in`.read(b, off, len)
         if (count != -1) {

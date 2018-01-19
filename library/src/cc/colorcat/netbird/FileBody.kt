@@ -4,6 +4,7 @@ import cc.colorcat.netbird.internal.ProgressInputStream
 import cc.colorcat.netbird.internal.close
 import cc.colorcat.netbird.internal.justDump
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.OutputStream
 
@@ -21,7 +22,7 @@ class FileBody private constructor(
     companion object {
         internal fun create(name: String, contentType: String, file: File, listener: UploadListener?): FileBody {
             if (!file.exists()) {
-                throw IOException("${file.absolutePath} is not exists")
+                throw FileNotFoundException("${file.absolutePath} is not exists")
             }
             return FileBody(name, contentType, file, listener)
         }
@@ -29,8 +30,10 @@ class FileBody private constructor(
 
     override fun contentType() = contentType
 
+    @Throws(IOException::class)
     override fun contentLength() = file.length()
 
+    @Throws(IOException::class)
     override fun writeTo(output: OutputStream) {
         val input = ProgressInputStream.wrap(file, listener)
         try {

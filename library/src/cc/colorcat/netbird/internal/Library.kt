@@ -4,10 +4,7 @@ import cc.colorcat.netbird.Headers
 import cc.colorcat.netbird.MutableHeaders
 import cc.colorcat.netbird.MutableParameters
 import cc.colorcat.netbird.Parameters
-import java.io.BufferedInputStream
-import java.io.BufferedOutputStream
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.*
 import java.util.*
 
 /**
@@ -15,7 +12,9 @@ import java.util.*
  * xx.ch@outlook.com
  */
 internal val emptyOutputStream = object : OutputStream() {
-    override fun write(b: Int) {}
+    @Throws(IOException::class)
+    override fun write(b: Int) {
+    }
 }
 
 private val headersComparator = String.CASE_INSENSITIVE_ORDER
@@ -74,6 +73,7 @@ internal fun <T> List<T>.toImmutableList(): List<T> = Collections.unmodifiableLi
 
 internal fun <K, V> Map<K, V>.toImmutableMap(): Map<K, V> = Collections.unmodifiableMap(HashMap(this))
 
+@Throws(IOException::class)
 internal fun InputStream.justDump(output: OutputStream) {
     val bis = this as? BufferedInputStream ?: BufferedInputStream(this)
     val bos = output as? BufferedOutputStream ?: BufferedOutputStream(output)

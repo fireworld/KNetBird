@@ -1,10 +1,7 @@
 package cc.colorcat.netbird
 
 import cc.colorcat.netbird.internal.parseCharset
-import java.io.ByteArrayInputStream
-import java.io.Closeable
-import java.io.InputStream
-import java.io.Reader
+import java.io.*
 import java.nio.charset.Charset
 
 /**
@@ -31,10 +28,13 @@ abstract class ResponseBody : Closeable {
         return stream().bufferedReader(charset)
     }
 
+    @Throws(IOException::class)
     fun string() = reader().readText()
 
+    @Throws(IOException::class)
     fun string(charsetIfAbsent: Charset) = reader(charsetIfAbsent).readText()
 
+    @Throws(IOException::class)
     fun bytes() = stream().readBytes()
 
     final override fun close() {
@@ -55,9 +55,9 @@ abstract class ResponseBody : Closeable {
 
         fun create(input: InputStream, contentType: String? = null, contentLength: Long = -1L, charset: Charset? = parseCharset(contentType)): ResponseBody {
             return object : ResponseBody() {
-                override fun contentLength() = contentLength
-
                 override fun contentType() = contentType
+
+                override fun contentLength() = contentLength
 
                 override fun charset() = charset
 
