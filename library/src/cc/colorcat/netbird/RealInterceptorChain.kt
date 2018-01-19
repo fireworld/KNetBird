@@ -12,16 +12,15 @@ internal class RealInterceptorChain internal constructor(
         private val request: Request,
         private val connection: Connection
 ) : Interceptor.Chain {
-    override fun connection(): Connection {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
-    override fun request(): Request {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun connection() = connection
+
+    override fun request() = request
 
     @Throws(IOException::class)
     override fun proceed(request: Request): Response {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val next = RealInterceptorChain(interceptors, index + 1, request, connection)
+        val interceptor = interceptors[index]
+        return interceptor.intercept(next)
     }
 }

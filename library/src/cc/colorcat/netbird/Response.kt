@@ -102,7 +102,7 @@ class Response private constructor(builder: Builder) : Closeable {
             return this
         }
 
-        fun responseBody(responseBody: ResponseBody): Builder {
+        fun responseBody(responseBody: ResponseBody?): Builder {
             this.responseBody = responseBody
             return this
         }

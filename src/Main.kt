@@ -1,4 +1,4 @@
-import cc.colorcat.netbird.internal.mutableHeadersOf
+import java.net.URI
 import java.util.*
 
 /**
@@ -22,22 +22,24 @@ fun main(args: Array<String>) {
 //    headers.clear()
 //    println(headers)
 
-    val names = mutableListOf("this", "is", "test")
-    val values = mutableListOf("1", "2", "3")
-    val headers = mutableHeadersOf(names, values)
+//    val names = mutableListOf("this", "is", "test")
+//    val values = mutableListOf("1", "2", "3")
+//    val headers = mutableHeadersOf(names, values)
 //    println(headers)
-    for ((name, value) in headers) {
-        println("name = $name, value = $value")
-    }
-    println("-------------")
+//    for ((name, value) in headers) {
+//        println("name = $name, value = $value")
+//    }
+//    println("-------------")
 //    headers.filter { it.name.length > 3 }.forEach { println(it) }
-    val itr = headers.iterator()
-    while (itr.hasNext()) {
-        if (itr.next().name.length > 3) {
-            itr.remove()
-        }
-    }
-    for ((name, value) in headers) {
-        println("name = $name, value = $value")
-    }
+//    val itr = headers.iterator()
+//    while (itr.hasNext()) {
+//        if (itr.next().name.length > 3) {
+//            itr.remove()
+//        }
+//    }
+//    for ((name, value) in headers) {
+//        println("name = $name, value = $value")
+//    }
+    val uri = URI.create("http://www.baidu.com/test/")
+    val new = uri.resolve("/path")
 }

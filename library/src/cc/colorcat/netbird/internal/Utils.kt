@@ -55,6 +55,8 @@ internal fun close(closeable: Closeable?) {
     }
 }
 
+internal fun <T : CharSequence> emptyElse(cs: T?, defaultValue: T) = if (cs == null || cs.isEmpty()) defaultValue else cs
+
 internal fun smartEncode(s: String): String {
     try {
         val decoded = decode(s)
