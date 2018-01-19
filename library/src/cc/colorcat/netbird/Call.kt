@@ -25,6 +25,8 @@ interface Call : Cloneable {
 
     fun isCanceled(): Boolean
 
+    override fun clone(): Call
+
     interface Factory {
         fun newCall(request: Request): Call
     }

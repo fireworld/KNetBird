@@ -5,14 +5,9 @@ package cc.colorcat.netbird
  * xx.ch@outlook.com
  */
 interface ProgressListener {
-
     fun onChanged(finished: Long, total: Long, percent: Int)
 }
 
-interface DownloadListener : ProgressListener {
+interface DownloadListener : ProgressListener
 
-}
-
-interface UploadListener : ProgressListener {
-
-}
+interface UploadListener : ProgressListener
