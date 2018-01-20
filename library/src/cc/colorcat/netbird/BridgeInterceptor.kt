@@ -15,13 +15,13 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val builder = request.newBuilder()
-        val userUrl = builder.url()
+        val userUrl = builder.url
         var uri = URI.create(if (userUrl.isEmpty()) baseUrl else userUrl)
-        val path = builder.path()
+        val path = builder.path
         if (!path.isEmpty()) uri = uri.resolve(path)
         var url = uri.toString()
 
-        if (!builder.method().needBody()) {
+        if (!builder.method.needBody()) {
             val parameters = concatParameters(builder.names(), builder.values())
             if (parameters != null) {
                 url = url + '?' + parameters

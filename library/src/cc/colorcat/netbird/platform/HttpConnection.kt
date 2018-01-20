@@ -14,7 +14,7 @@ import javax.net.ssl.HttpsURLConnection
  */
 open class HttpConnection : Connection {
     protected var cacheEnabled = false
-    private var conn: HttpURLConnection? = null
+    private lateinit var conn: HttpURLConnection
     private var input: InputStream? = null
     private var listener: DownloadListener? = null
 
