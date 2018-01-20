@@ -40,6 +40,22 @@ fun main(args: Array<String>) {
 //    for ((name, value) in headers) {
 //        println("name = $name, value = $value")
 //    }
-    val uri = URI.create("http://www.baidu.com/test/")
-    val new = uri.resolve("/path")
+//    val uri = URI.create("http://www.baidu.com/test/")
+//    val new = uri.resolve("/path")
+//    println(new)
+    val a = 23
+    var b: Int
+    val scanner = Scanner(System.`in`)
+    print("Input a number: ")
+    b = scanner.nextInt()
+    val c by lazy {
+        println("c executed")
+        a + b
+    }
+    println("a = $a, b = $b")
+    println("c = $c")
+    print("Input another number: ")
+    b += 10
+    println("a = $a, b = $b")
+    println("c = $c")
 }

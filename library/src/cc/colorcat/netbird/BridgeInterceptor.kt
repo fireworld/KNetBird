@@ -28,7 +28,7 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
                 builder.clear()
             }
         } else {
-            val body = request.body()
+            val body = request.requestBody
             if (body != null) {
                 builder.setHeader(Headers.CONTENT_TYPE, body.contentType())
                 val contentLength = body.contentLength()

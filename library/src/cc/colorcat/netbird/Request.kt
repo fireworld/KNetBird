@@ -17,11 +17,11 @@ open class Request protected constructor(builder: Builder) {
     val downloadListener = builder.downloadListener()
     val tag = builder.tag()
     internal val boundary = builder.boundary()
-    private var body: RequestBody? = null
-    private var freeze = false
-
-    val isFreeze
-        get() = freeze
+    internal val requestBody: RequestBody? by lazy {
+        parseBody()
+    }
+    var freeze = false
+        private set
 
     internal fun freeze(): Request {
         this.freeze = true
@@ -31,13 +31,6 @@ open class Request protected constructor(builder: Builder) {
     internal fun unfreeze(): Request {
         this.freeze = false
         return this
-    }
-
-    internal fun body(): RequestBody? {
-        if (body == null) {
-            body = parseBody()
-        }
-        return body
     }
 
     private fun parseBody(): RequestBody? {
