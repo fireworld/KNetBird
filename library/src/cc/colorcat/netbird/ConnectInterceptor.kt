@@ -10,8 +10,8 @@ internal class ConnectInterceptor(private val netBird: KNetBird) : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val conn = chain.connection()
-        val request = chain.request()
+        val conn = chain.connection
+        val request = chain.request
         conn.connect(netBird, request)
         conn.writeHeaders(request.headers)
         val method = request.method

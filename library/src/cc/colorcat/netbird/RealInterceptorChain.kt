@@ -9,13 +9,13 @@ import java.io.IOException
 internal class RealInterceptorChain internal constructor(
         private val interceptors: List<Interceptor>,
         private val index: Int,
-        private val request: Request,
-        private val connection: Connection
+        override val request: Request,
+        override val connection: Connection
 ) : Interceptor.Chain {
 
-    override fun connection() = connection
-
-    override fun request() = request
+//    override fun connection() = connection
+//
+//    override fun request() = request
 
     @Throws(IOException::class)
     override fun proceed(request: Request): Response {

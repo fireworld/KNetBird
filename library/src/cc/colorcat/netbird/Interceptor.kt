@@ -11,9 +11,13 @@ interface Interceptor {
     fun intercept(chain: Chain): Response
 
     interface Chain {
-        fun connection(): Connection
+        val connection: Connection
 
-        fun request(): Request
+        val request: Request
+
+//        fun connection(): Connection
+//
+//        fun request(): Request
 
         @Throws(IOException::class)
         fun proceed(request: Request): Response

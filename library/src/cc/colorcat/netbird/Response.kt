@@ -8,10 +8,10 @@ import java.io.Closeable
  * xx.ch@outlook.com
  */
 class Response private constructor(builder: Builder) : Closeable {
-    val code = builder.code()
-    val msg = builder.msg()
-    val headers = builder.headers()
-    val responseBody = builder.responseBody()
+    val code: Int = builder.code
+    val msg: String = builder.msg
+    val headers: Headers = builder.headers
+    val responseBody: ResponseBody? = builder.responseBody
 
     fun header(name: String) = headers.value(name)
 
@@ -24,32 +24,29 @@ class Response private constructor(builder: Builder) : Closeable {
     }
 
     class Builder {
-        private var code: Int
-        private var msg: String
-        private val headers: MutableHeaders
-        private var responseBody: ResponseBody?
+        var code: Int
+            private set
+        var msg: String
+            private set
+        private val _Headers: MutableHeaders
+        val headers
+            get() = _Headers.toHeaders()
+        var responseBody: ResponseBody?
+            private set
 
         constructor() {
             code = HttpStatus.CODE_CONNECT_ERROR
             msg = HttpStatus.MSG_CONNECT_ERROR
-            headers = mutableHeadersOf(16)
+            _Headers = mutableHeadersOf(16)
             responseBody = null
         }
 
         internal constructor(response: Response) {
             this.code = response.code
             this.msg = response.msg
-            this.headers = response.headers.toMutableHeaders()
+            this._Headers = response.headers.toMutableHeaders()
             this.responseBody = response.responseBody
         }
-
-        fun code() = code
-
-        fun msg() = msg
-
-        fun headers() = headers.toHeaders()
-
-        fun responseBody() = responseBody
 
         fun code(code: Int): Builder {
             this.code = code
@@ -62,43 +59,43 @@ class Response private constructor(builder: Builder) : Closeable {
         }
 
         fun replaceHeaders(headers: Headers): Builder {
-            this.headers.clear()
-            this.headers.addAll(headers.names(), headers.values())
+            this._Headers.clear()
+            this._Headers.addAll(headers.names(), headers.values())
             return this
         }
 
         fun addHeader(headers: Headers): Builder {
-            this.headers.addAll(headers.names(), headers.values())
+            this._Headers.addAll(headers.names(), headers.values())
             return this
         }
 
         fun addHeader(name: String, value: String): Builder {
-            headers.add(name, value)
+            _Headers.add(name, value)
             return this
         }
 
         fun addHeaderIfNot(name: String, value: String): Builder {
-            headers.addIfNot(name, value)
+            _Headers.addIfNot(name, value)
             return this
         }
 
         fun addAllHeader(names: List<String>, values: List<String>): Builder {
-            headers.addAll(names, values)
+            _Headers.addAll(names, values)
             return this
         }
 
         fun setHeader(name: String, value: String): Builder {
-            headers.set(name, value)
+            _Headers.set(name, value)
             return this
         }
 
         fun removeHeader(name: String): Builder {
-            headers.removeAll(name)
+            _Headers.removeAll(name)
             return this
         }
 
         fun clearHeaders(): Builder {
-            headers.clear()
+            _Headers.clear()
             return this
         }
 

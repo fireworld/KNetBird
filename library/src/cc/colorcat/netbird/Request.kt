@@ -60,15 +60,15 @@ open class Request protected constructor(builder: Builder) {
             private set
         var method: Method
             private set
-        private val bParameters: MutableParameters
+        private val _parameters: MutableParameters
         val parameters
-            get() = bParameters.toParameters()
-        private val bFileBodies: MutableList<FileBody>
+            get() = _parameters.toParameters()
+        private val _fileBodies: MutableList<FileBody>
         val fileBodies
-            get() = bFileBodies.toImmutableList()
-        private val bHeaders: MutableHeaders
+            get() = _fileBodies.toImmutableList()
+        private val _headers: MutableHeaders
         val headers
-            get() = bHeaders.toHeaders()
+            get() = _headers.toHeaders()
         var downloadListener: DownloadListener?
             private set
         internal val boundary: String
@@ -83,9 +83,9 @@ open class Request protected constructor(builder: Builder) {
             this.url = ""
             this.path = ""
             this.method = Method.GET
-            this.bParameters = mutableParametersOf(6)
-            this.bFileBodies = ArrayList(1)
-            this.bHeaders = mutableHeadersOf(6)
+            this._parameters = mutableParametersOf(6)
+            this._fileBodies = ArrayList(1)
+            this._headers = mutableHeadersOf(6)
             this.downloadListener = null
             this.boundary = "==${System.currentTimeMillis()}=="
             this.tag = this.boundary
@@ -95,33 +95,33 @@ open class Request protected constructor(builder: Builder) {
             this.url = request.url
             this.path = request.path
             this.method = request.method
-            this.bParameters = request.parameters.toMutableParameters()
-            this.bFileBodies = request.fileBodies.toMutableList()
-            this.bHeaders = request.headers.toMutableHeaders()
+            this._parameters = request.parameters.toMutableParameters()
+            this._fileBodies = request.fileBodies.toMutableList()
+            this._headers = request.headers.toMutableHeaders()
             this.downloadListener = request.downloadListener
             this.boundary = request.boundary
             this.tag = request.tag
         }
 
-        fun names() = bParameters.names()
+        fun names() = _parameters.names()
 
-        fun values() = bParameters.values()
+        fun values() = _parameters.values()
 
-        fun value(name: String) = bParameters.value(name)
+        fun value(name: String) = _parameters.value(name)
 
-        fun value(name: String, defaultValue: String = "") = bParameters.value(name, defaultValue)
+        fun value(name: String, defaultValue: String = "") = _parameters.value(name, defaultValue)
 
-        fun values(name: String) = bParameters.values(name)
+        fun values(name: String) = _parameters.values(name)
 
-        fun headerNames() = bHeaders.names()
+        fun headerNames() = _headers.names()
 
-        fun headerValues() = bHeaders.values()
+        fun headerValues() = _headers.values()
 
-        fun headerValue(name: String) = bHeaders.value(name)
+        fun headerValue(name: String) = _headers.value(name)
 
-        fun headerValue(name: String, defaultValue: String) = bHeaders.value(name, defaultValue)
+        fun headerValue(name: String, defaultValue: String) = _headers.value(name, defaultValue)
 
-        fun headerValues(name: String) = bHeaders.values(name)
+        fun headerValues(name: String) = _headers.values(name)
 
         open fun url(url: String): Builder {
             this.url = checkedHttpUrl(url)
@@ -174,99 +174,99 @@ open class Request protected constructor(builder: Builder) {
         }
 
         open fun replace(parameters: Parameters): Builder {
-            this.bParameters.clear()
-            this.bParameters.addAll(parameters.names(), parameters.values())
+            this._parameters.clear()
+            this._parameters.addAll(parameters.names(), parameters.values())
             return this
         }
 
         open fun add(parameters: Parameters): Builder {
-            this.bParameters.addAll(parameters.names(), parameters.values())
+            this._parameters.addAll(parameters.names(), parameters.values())
             return this
         }
 
         open fun add(name: String, value: String): Builder {
-            bParameters.add(name, value)
+            _parameters.add(name, value)
             return this
         }
 
         open fun addIfNot(name: String, value: String): Builder {
-            bParameters.addIfNot(name, value)
+            _parameters.addIfNot(name, value)
             return this
         }
 
         open fun addAll(names: List<String>, values: List<String>): Builder {
-            bParameters.addAll(names, values)
+            _parameters.addAll(names, values)
             return this
         }
 
         open fun set(name: String, value: String): Builder {
-            bParameters.set(name, value)
+            _parameters.set(name, value)
             return this
         }
 
         open fun remove(name: String): Builder {
-            bParameters.removeAll(name)
+            _parameters.removeAll(name)
             return this
         }
 
         open fun clear(): Builder {
-            bParameters.clear()
+            _parameters.clear()
             return this
         }
 
         open fun addFile(name: String, contentType: String, file: File) = addFile(name, contentType, file, null)
 
         open fun addFile(name: String, contentType: String, file: File, listener: UploadListener?): Builder {
-            bFileBodies.add(FileBody.create(name, contentType, file, listener))
+            _fileBodies.add(FileBody.create(name, contentType, file, listener))
             return this
         }
 
         open fun clearFile(): Builder {
-            bFileBodies.clear()
+            _fileBodies.clear()
             return this
         }
 
         open fun replaceHeaders(headers: Headers): Builder {
-            this.bHeaders.clear()
-            this.bHeaders.addAll(headers.names(), headers.values())
+            this._headers.clear()
+            this._headers.addAll(headers.names(), headers.values())
             return this
         }
 
         open fun addHeader(headers: Headers): Builder {
-            this.bHeaders.addAll(headers.names(), headers.values())
+            this._headers.addAll(headers.names(), headers.values())
             return this
         }
 
         open fun addHeader(name: String, value: String): Builder {
             checkHeader(name, value)
-            bHeaders.add(name, value)
+            _headers.add(name, value)
             return this
         }
 
         open fun addHeaderIfNot(name: String, value: String): Builder {
             checkHeader(name, value)
-            bHeaders.addIfNot(name, value)
+            _headers.addIfNot(name, value)
             return this
         }
 
         open fun addAllHeader(names: List<String>, values: List<String>): Builder {
-            bHeaders.addAll(names, values)
+            _headers.addAll(names, values)
             return this
         }
 
         open fun setHeader(name: String, value: String): Builder {
             checkHeader(name, value)
-            bHeaders.set(name, value)
+            _headers.set(name, value)
             return this
         }
 
         open fun removeHeader(name: String): Builder {
-            bHeaders.removeAll(name)
+            _headers.removeAll(name)
             return this
         }
 
         open fun clearHeaders(): Builder {
-            bHeaders.clear()
+            _headers.clear()
             return this
         }
 

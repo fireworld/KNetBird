@@ -11,9 +11,9 @@ internal class GzipInterceptor(private val gzipEnabled: Boolean) : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        if (!gzipEnabled) return chain.proceed(chain.request())
+        if (!gzipEnabled) return chain.proceed(chain.request)
         var transparentGzip = false
-        val builder = chain.request().unfreeze().newBuilder()
+        val builder = chain.request.unfreeze().newBuilder()
         if (builder.headerValue("Accept-Encoding") == null && builder.headerValue("Range") == null) {
             transparentGzip = true
             builder.addHeader("Accept-Encoding", "gzip")
