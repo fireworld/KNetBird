@@ -2,7 +2,6 @@ package cc.colorcat.netbird.platform
 
 import cc.colorcat.netbird.*
 import cc.colorcat.netbird.internal.headersOf
-import cc.colorcat.netbird.internal.mutableHeadersOf
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -16,7 +15,10 @@ import javax.net.ssl.HttpsURLConnection
  * xx.ch@outlook.com
  */
 open class HttpConnection : Connection {
-    protected var cacheEnabled = false
+    companion object {
+        protected var cacheEnabled = false
+    }
+
     private lateinit var conn: HttpURLConnection
     private var input: InputStream? = null
     private var listener: DownloadListener? = null
@@ -87,7 +89,7 @@ open class HttpConnection : Connection {
             input = conn.inputStream
         }
         return if (input != null) {
-            RealResponseBody.create(input as InputStream, headers)
+            RealResponseBody.create(input as InputStream, headers, listener)
         } else {
             null
         }
@@ -110,7 +112,7 @@ open class HttpConnection : Connection {
         }
     }
 
-    open protected fun enableCache(path: File?, cacheSize: Long) {
-        cacheEnabled = path != null && cacheSize > 0
+    open protected fun enableCache(cachePath: File?, cacheSize: Long) {
+        cacheEnabled = cachePath != null && cacheSize > 0
     }
 }

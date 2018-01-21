@@ -9,7 +9,7 @@ import cc.colorcat.netbird.Connection
 abstract class Platform {
     companion object {
         @Volatile
-        private var platform: Platform? = null
+        internal var platform: Platform? = null
 
         internal fun get(): Platform {
             if (platform == null) {

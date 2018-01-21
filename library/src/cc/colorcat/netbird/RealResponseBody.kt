@@ -15,7 +15,7 @@ class RealResponseBody private constructor(
     companion object {
         fun create(input: InputStream, headers: Headers) = RealResponseBody(input, headers)
 
-        fun crate(input: InputStream, headers: Headers, listener: DownloadListener?): RealResponseBody {
+        fun create(input: InputStream, headers: Headers, listener: DownloadListener?): RealResponseBody {
             val pis = ProgressInputStream.wrap(input, headers.contentLength(), listener)
             return RealResponseBody(pis, headers)
         }

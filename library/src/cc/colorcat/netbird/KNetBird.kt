@@ -39,6 +39,7 @@ class KNetBird(builder: Builder) : Call.Factory {
     init {
         dispatcher.setMaxRunning(maxRunning)
         dispatcher.setExecutor(executor)
+        Platform.platform = this.platform
     }
 
     override fun newCall(request: Request): Call = RealCall(this, request)
