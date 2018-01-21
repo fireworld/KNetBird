@@ -8,7 +8,6 @@ import java.io.IOException
  */
 interface Call : Cloneable {
     val request: Request
-//    fun request(): Request
 
     @Throws(IOException::class)
     fun execute(): Response

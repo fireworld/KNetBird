@@ -23,12 +23,6 @@ fun main(args: Array<String>) {
             .url("http://www.pconline.com.cn")
             .get()
             .build()
-//    val response = netBird.newCall(request).execute()
-//    println(response.headers)
-//    for ((name, value) in response.headers) {
-//        println("$name = $value")
-//    }
-//    println(response.responseBody?.string(Charset.forName("GBK")))
     netBird.newCall(request).enqueue(object : Callback {
         override fun onStart() {
             log.log(Level.SEVERE, "onStart")

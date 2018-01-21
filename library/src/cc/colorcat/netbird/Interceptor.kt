@@ -15,10 +15,6 @@ interface Interceptor {
 
         val request: Request
 
-//        fun connection(): Connection
-//
-//        fun request(): Request
-
         @Throws(IOException::class)
         fun proceed(request: Request): Response
     }

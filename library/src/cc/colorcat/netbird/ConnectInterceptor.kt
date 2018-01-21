@@ -14,10 +14,9 @@ internal class ConnectInterceptor(private val netBird: KNetBird) : Interceptor {
         val request = chain.request
         conn.connect(netBird, request)
         conn.writeHeaders(request.headers)
-        val method = request.method
-        if (method.needBody()) {
+        if (request.method.needBody()) {
             val body = request.requestBody
-                    ?: throw IllegalArgumentException("method ${method.name} must have a request body")
+                    ?: throw IllegalArgumentException("method ${request.method.name} must have a request body")
             conn.writeRequestBody(body)
         }
         val headers = conn.responseHeaders()

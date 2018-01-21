@@ -13,10 +13,6 @@ internal class RealInterceptorChain internal constructor(
         override val connection: Connection
 ) : Interceptor.Chain {
 
-//    override fun connection() = connection
-//
-//    override fun request() = request
-
     @Throws(IOException::class)
     override fun proceed(request: Request): Response {
         val next = RealInterceptorChain(interceptors, index + 1, request, connection)

@@ -14,8 +14,6 @@ internal class RealCall(private val netBird: KNetBird, override val request: Req
     private val executed = AtomicBoolean(false)
     private val canceled = AtomicBoolean(false)
 
-//    override fun request(): Request = request
-
     @Throws(IOException::class)
     override fun execute(): Response {
         if (executed.getAndSet(true)) throw IllegalStateException("Already executed")
@@ -88,8 +86,6 @@ internal class RealCall(private val netBird: KNetBird, override val request: Req
 
         val call: RealCall = this@RealCall
 
-//        fun get() = this@RealCall
-
         override fun run() {
             var code = HttpStatus.CODE_CONNECT_ERROR
             var msg: String? = null
@@ -119,8 +115,6 @@ internal class RealCall(private val netBird: KNetBird, override val request: Req
                 close(this@RealCall.connection)
             }
         }
-
-//        fun request() = this@RealCall.request
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
