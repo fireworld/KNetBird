@@ -15,7 +15,6 @@ interface Call : Cloneable {
 
     /**
      * @param callback 异步请求结果回调
-     * @throws NullPointerException 如果 callback 为空会抛出此异常
      */
     fun enqueue(callback: Callback)
 
