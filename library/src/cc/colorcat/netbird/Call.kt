@@ -7,7 +7,8 @@ import java.io.IOException
  * xx.ch@outlook.com
  */
 interface Call : Cloneable {
-    fun request(): Request
+    val request: Request
+//    fun request(): Request
 
     @Throws(IOException::class)
     fun execute(): Response

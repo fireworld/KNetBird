@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService
  * xx.ch@outlook.com
  */
 class Dispatcher {
-    private var executor: ExecutorService? = null
+    private lateinit var executor: ExecutorService
     private var maxRunning: Int = 6
     private val waitingAsyncCalls: Queue<RealCall.AsyncCall> = ConcurrentLinkedQueue()
     private val runningAsyncCalls: MutableSet<RealCall.AsyncCall> = CopyOnWriteArraySet()
@@ -55,7 +55,7 @@ class Dispatcher {
 
     private fun onDuplicateRequest(call: RealCall.AsyncCall) {
         val callback = call.callback
-        callback.onFailure(call.get(),
+        callback.onFailure(call.call,
                 StateIOException(HttpStatus.MSG_DUPLICATE_REQUEST, HttpStatus.CODE_DUPLICATE_REQUEST))
         callback.onFinish()
     }

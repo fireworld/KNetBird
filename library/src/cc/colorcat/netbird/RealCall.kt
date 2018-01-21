@@ -9,12 +9,12 @@ import java.util.concurrent.atomic.AtomicBoolean
  * Created by cxx on 2018/1/19.
  * xx.ch@outlook.com
  */
-internal class RealCall(private val netBird: KNetBird, private val request: Request) : Call {
+internal class RealCall(private val netBird: KNetBird, override val request: Request) : Call {
     private val connection = netBird.connection.clone()
     private val executed = AtomicBoolean(false)
     private val canceled = AtomicBoolean(false)
 
-    override fun request(): Request = request
+//    override fun request(): Request = request
 
     @Throws(IOException::class)
     override fun execute(): Response {
@@ -44,7 +44,7 @@ internal class RealCall(private val netBird: KNetBird, private val request: Requ
         interceptors.addAll(tailInterceptors)
         interceptors.add(GzipInterceptor(netBird.gzipEnabled))
         interceptors.add(ConnectInterceptor(netBird))
-        val chain = RealInterceptorChain(listOf(), 0, request, connection)
+        val chain = RealInterceptorChain(interceptors, 0, request, connection)
         return chain.proceed(request)
     }
 
@@ -84,6 +84,12 @@ internal class RealCall(private val netBird: KNetBird, private val request: Requ
 
     internal inner class AsyncCall(internal val callback: Callback) : Runnable {
 
+        val request: Request = this@RealCall.request
+
+        val call: RealCall = this@RealCall
+
+//        fun get() = this@RealCall
+
         override fun run() {
             var code = HttpStatus.CODE_CONNECT_ERROR
             var msg: String? = null
@@ -114,9 +120,7 @@ internal class RealCall(private val netBird: KNetBird, private val request: Requ
             }
         }
 
-        fun request() = this@RealCall.request
-
-        fun get() = this@RealCall
+//        fun request() = this@RealCall.request
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -126,7 +130,7 @@ internal class RealCall(private val netBird: KNetBird, private val request: Requ
 
             if (callback != other.callback) return false
 
-            return this@RealCall == other.get()
+            return this@RealCall == other.call
         }
 
         override fun hashCode(): Int {

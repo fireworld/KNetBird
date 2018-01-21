@@ -36,6 +36,11 @@ class KNetBird(builder: Builder) : Call.Factory {
     val exceptionLogEnabled = builder.exceptionLogEnabled
     val gzipEnabled = builder.gzipEnabled
 
+    init {
+        dispatcher.setMaxRunning(maxRunning)
+        dispatcher.setExecutor(executor)
+    }
+
     override fun newCall(request: Request): Call = RealCall(this, request)
 
     fun newBuilder(): Builder = Builder(this)

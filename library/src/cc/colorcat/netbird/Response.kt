@@ -28,23 +28,23 @@ class Response private constructor(builder: Builder) : Closeable {
             private set
         var msg: String
             private set
-        private val _Headers: MutableHeaders
+        private val _headers: MutableHeaders
         val headers
-            get() = _Headers.toHeaders()
+            get() = _headers.toHeaders()
         var responseBody: ResponseBody?
             private set
 
         constructor() {
             code = HttpStatus.CODE_CONNECT_ERROR
             msg = HttpStatus.MSG_CONNECT_ERROR
-            _Headers = mutableHeadersOf(16)
+            _headers = mutableHeadersOf(16)
             responseBody = null
         }
 
         internal constructor(response: Response) {
             this.code = response.code
             this.msg = response.msg
-            this._Headers = response.headers.toMutableHeaders()
+            this._headers = response.headers.toMutableHeaders()
             this.responseBody = response.responseBody
         }
 
@@ -59,43 +59,43 @@ class Response private constructor(builder: Builder) : Closeable {
         }
 
         fun replaceHeaders(headers: Headers): Builder {
-            this._Headers.clear()
-            this._Headers.addAll(headers.names(), headers.values())
+            this._headers.clear()
+            this._headers.addAll(headers.names(), headers.values())
             return this
         }
 
         fun addHeader(headers: Headers): Builder {
-            this._Headers.addAll(headers.names(), headers.values())
+            this._headers.addAll(headers.names(), headers.values())
             return this
         }
 
         fun addHeader(name: String, value: String): Builder {
-            _Headers.add(name, value)
+            _headers.add(name, value)
             return this
         }
 
         fun addHeaderIfNot(name: String, value: String): Builder {
-            _Headers.addIfNot(name, value)
+            _headers.addIfNot(name, value)
             return this
         }
 
         fun addAllHeader(names: List<String>, values: List<String>): Builder {
-            _Headers.addAll(names, values)
+            _headers.addAll(names, values)
             return this
         }
 
         fun setHeader(name: String, value: String): Builder {
-            _Headers.set(name, value)
+            _headers.set(name, value)
             return this
         }
 
         fun removeHeader(name: String): Builder {
-            _Headers.removeAll(name)
+            _headers.removeAll(name)
             return this
         }
 
         fun clearHeaders(): Builder {
-            _Headers.clear()
+            _headers.clear()
             return this
         }
 
