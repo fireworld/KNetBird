@@ -177,7 +177,7 @@ class MRequest<T> internal constructor(builder: Builder<T>) : Request(builder) {
         }
 
         override fun addFile(name: String, contentType: String, file: File, listener: UploadListener?): Builder<T> {
-            super.addFile(name, contentType, file, listener)
+            super.addFile(name, contentType, file, MUploadListener.wrap(listener))
             return this
         }
 
@@ -227,7 +227,7 @@ class MRequest<T> internal constructor(builder: Builder<T>) : Request(builder) {
         }
 
         override fun downloadListener(listener: DownloadListener?): Builder<T> {
-            super.downloadListener(listener)
+            super.downloadListener(MDownloadListener.wrap(listener))
             return this
         }
 

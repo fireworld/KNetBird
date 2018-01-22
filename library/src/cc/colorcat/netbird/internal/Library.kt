@@ -24,7 +24,8 @@ private val headersComparator = String.CASE_INSENSITIVE_ORDER
 private val parametersComparator = Comparator<String> { str1, str2 -> str1.compareTo(str2) }
 
 fun headersOf(names: List<String>, values: List<String>): Headers {
-    return checked(names, values, Headers.emptyHeaders) ?: Headers(Pair(names, values, headersComparator))
+    return checked(names, values, Headers.emptyHeaders) ?:
+            Headers(Pair(names.toImmutableList(), values.toImmutableList(), headersComparator))
 }
 
 fun headersOf(namesAndValues: Map<String?, List<String?>?>): Headers {
@@ -34,19 +35,22 @@ fun headersOf(namesAndValues: Map<String?, List<String?>?>): Headers {
 }
 
 
-fun mutableHeadersOf(names: MutableList<String>, values: MutableList<String>): MutableHeaders {
-    return checked(names, values, null) ?: MutableHeaders(MutablePair(names, values, headersComparator))
+fun mutableHeadersOf(names: List<String>, values: List<String>): MutableHeaders {
+    return checked(names, values, null) ?:
+            MutableHeaders(MutablePair(names.toMutableList(), values.toMutableList(), headersComparator))
 }
 
 fun mutableHeadersOf(initCapacity: Int) = MutableHeaders(MutablePair(initCapacity, headersComparator))
 
 
 fun parametersOf(names: List<String>, values: List<String>): Parameters {
-    return checked(names, values, Parameters.emptyParameters) ?: Parameters(Pair(names, values, parametersComparator))
+    return checked(names, values, Parameters.emptyParameters) ?:
+            Parameters(Pair(names.toImmutableList(), values.toImmutableList(), parametersComparator))
 }
 
-fun mutableParametersOf(names: MutableList<String>, values: MutableList<String>): MutableParameters {
-    return checked(names, values, null) ?: MutableParameters(MutablePair(names, values, parametersComparator))
+fun mutableParametersOf(names: List<String>, values: List<String>): MutableParameters {
+    return checked(names, values, null) ?:
+            MutableParameters(MutablePair(names.toMutableList(), values.toMutableList(), parametersComparator))
 }
 
 fun mutableParametersOf(initCapacity: Int) = MutableParameters(MutablePair(initCapacity, parametersComparator))

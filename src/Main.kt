@@ -1,7 +1,4 @@
-import cc.colorcat.netbird.DownloadListener
-import cc.colorcat.netbird.FileParser
-import cc.colorcat.netbird.KNetBird
-import cc.colorcat.netbird.MRequest
+import cc.colorcat.netbird.*
 import java.io.File
 import java.util.*
 import java.util.logging.Level
@@ -22,7 +19,7 @@ fun main(args: Array<String>) {
     val netBird = KNetBird.Builder(url).build()
     val qq = "https://dldir1.qq.com/invc/tt/QQBrowser_Setup_9.7.12672.400.exe"
     val savePath = "/home/cxx/qq.exe"
-    val request = MRequest.Builder(FileParser.create(savePath))
+    val fileReq = MRequest.Builder(FileParser.create(savePath))
             .url(qq)
             .downloadListener(object : DownloadListener {
                 override fun onChanged(finished: Long, total: Long, percent: Int) {
@@ -47,5 +44,22 @@ fun main(args: Array<String>) {
                 }
             })
             .build()
-    netBird.send(request)
+    val stringReq = MRequest.Builder(StringParser.noCharset)
+            .url("http://www.pconline.com.cn")
+            .listener(object : MRequest.Listener<String>{
+                override fun onStart() {
+                }
+
+                override fun onSuccess(result: String) {
+                    println(result)
+                }
+
+                override fun onFailure(code: Int, msg: String) {
+                }
+
+                override fun onFinish() {
+                }
+            })
+            .build()
+    netBird.send(stringReq)
 }
