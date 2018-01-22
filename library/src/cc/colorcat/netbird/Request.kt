@@ -48,10 +48,47 @@ open class Request protected constructor(builder: Builder) {
 
     open fun newBuilder(): Builder {
         if (freeze) {
-            throw IllegalStateException("The request has been frozen, call isFreeze to check.")
+            throw IllegalStateException("The request has been frozen, call freeze to check.")
         }
         return Builder.newBuilder(this)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Request
+
+        if (url != other.url) return false
+        if (path != other.path) return false
+        if (method != other.method) return false
+        if (parameters != other.parameters) return false
+        if (fileBodies != other.fileBodies) return false
+        if (headers != other.headers) return false
+        if (downloadListener != other.downloadListener) return false
+        if (tag != other.tag) return false
+        if (boundary != other.boundary) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = url.hashCode()
+        result = 31 * result + path.hashCode()
+        result = 31 * result + method.hashCode()
+        result = 31 * result + parameters.hashCode()
+        result = 31 * result + fileBodies.hashCode()
+        result = 31 * result + headers.hashCode()
+        result = 31 * result + (downloadListener?.hashCode() ?: 0)
+        result = 31 * result + tag.hashCode()
+        result = 31 * result + boundary.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "Request(url='$url', path='$path', method=$method, parameters=$parameters, fileBodies=$fileBodies, headers=$headers, downloadListener=$downloadListener, tag=$tag, boundary='$boundary', freeze=$freeze)"
+    }
+
 
     open class Builder {
         var url: String
@@ -267,6 +304,11 @@ open class Request protected constructor(builder: Builder) {
 
         open fun clearHeaders(): Builder {
             _headers.clear()
+            return this
+        }
+
+        open fun downloadListener(listener: DownloadListener?): Builder {
+            this.downloadListener = listener
             return this
         }
 

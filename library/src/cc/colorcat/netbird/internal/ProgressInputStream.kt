@@ -56,7 +56,11 @@ class ProgressInputStream private constructor(
         finished += readCount
         currentPercent = (finished * 100 / contentLength).toInt()
         if (currentPercent > lastPercent) {
-            postProgressOnTargetThread(finished, contentLength, currentPercent, listener)
+            if (isTargetThread()) {
+                listener.onChanged(finished, contentLength, currentPercent)
+            } else {
+                onTargetThread(Runnable { listener.onChanged(finished, contentLength, currentPercent) })
+            }
             lastPercent = currentPercent
         }
     }

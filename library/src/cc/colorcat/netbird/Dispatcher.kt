@@ -27,7 +27,7 @@ class Dispatcher {
         this.maxRunning = maxRunning
     }
 
-    internal fun executed(call: RealCall) = runningSyncCalls.add(call)
+    internal fun executed(call: RealCall): Boolean = runningSyncCalls.add(call)
 
     internal fun enqueue(call: RealCall.AsyncCall) {
         if (!waitingAsyncCalls.contains(call) && waitingAsyncCalls.offer(call)) {
@@ -44,7 +44,7 @@ class Dispatcher {
         var call: RealCall.AsyncCall? = waitingAsyncCalls.poll()
         while (call != null) {
             if (runningAsyncCalls.add(call)) {
-                executor?.execute(call)
+                executor.execute(call)
                 if (runningAsyncCalls.size >= maxRunning) return
             } else {
                 onDuplicateRequest(call)
@@ -53,10 +53,9 @@ class Dispatcher {
         }
     }
 
-    private fun onDuplicateRequest(call: RealCall.AsyncCall) {
-        val callback = call.callback
-        callback.onFailure(call.call,
-                StateIOException(HttpStatus.MSG_DUPLICATE_REQUEST, HttpStatus.CODE_DUPLICATE_REQUEST))
+    private fun onDuplicateRequest(asyncCall: RealCall.AsyncCall) {
+        val callback = asyncCall.callback
+        callback.onFailure(asyncCall.call, StateIOException.duplicateRequest)
         callback.onFinish()
     }
 
@@ -67,5 +66,31 @@ class Dispatcher {
     internal fun finished(call: RealCall.AsyncCall) {
         runningAsyncCalls.remove(call)
         promoteCalls()
+    }
+
+    internal fun cancelWaiting(tag: Any) {
+//        val itr = waitingAsyncCalls.iterator()
+//        while (itr.hasNext()) {
+//            if (itr.next().request.tag == tag) {
+//                itr.remove()
+//            }
+//        }
+        waitingAsyncCalls.removeIf { it.request.tag == tag }
+    }
+
+    internal fun cancelAll(tag: Any) {
+        cancelWaiting(tag)
+        runningAsyncCalls
+                .filter { it.request.tag == tag }
+                .forEach { it.call.cancel() }
+        runningSyncCalls
+                .filter { it.request.tag == tag }
+                .forEach { it.cancel() }
+    }
+
+    internal fun cancelAll() {
+        waitingAsyncCalls.clear()
+        runningAsyncCalls.forEach { it.call.cancel() }
+        runningSyncCalls.forEach { it.cancel() }
     }
 }

@@ -44,6 +44,25 @@ class KNetBird(builder: Builder) : Call.Factory {
 
     override fun newCall(request: Request): Call = RealCall(this, request)
 
+    fun <T> send(request: MRequest<T>): Any {
+        newCall(request).enqueue(MCallback(request.parser, request.listener))
+        return request.tag
+    }
+
+    fun <T> execute(request: MRequest<T>): T? {
+        val response = newCall(request).execute()
+        if (response.code == 200 && response.responseBody != null) {
+            request.parser.parse(response).data
+        }
+        return null
+    }
+
+    fun cancelWaiting(tag: Any) = dispatcher.cancelWaiting(tag)
+
+    fun cancelAll(tag: Any) = dispatcher.cancelAll(tag)
+
+    fun cancelAll() = dispatcher.cancelAll()
+
     fun newBuilder(): Builder = Builder(this)
 
     class Builder {

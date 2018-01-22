@@ -1,6 +1,5 @@
 package cc.colorcat.netbird.internal
 
-import cc.colorcat.netbird.ProgressListener
 import java.io.Closeable
 import java.io.IOException
 import java.net.URLDecoder
@@ -11,11 +10,6 @@ import java.nio.charset.Charset
  * Created by cxx on 2018/1/16.
  * xx.ch@outlook.com
  */
-
-internal fun postProgressOnTargetThread(finished: Long, total: Long, percent: Int, listener: ProgressListener) {
-
-}
-
 internal fun checkedHttpUrl(url: String): String {
     if (!url.toLowerCase().matches("^(http)(s)?://(\\S)+".toRegex())) {
         throw IllegalArgumentException("Bad url = $url, the scheme must be http or https")

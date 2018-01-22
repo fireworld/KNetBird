@@ -1,9 +1,7 @@
 package cc.colorcat.netbird.internal
 
-import cc.colorcat.netbird.Headers
-import cc.colorcat.netbird.MutableHeaders
-import cc.colorcat.netbird.MutableParameters
-import cc.colorcat.netbird.Parameters
+import cc.colorcat.netbird.*
+import cc.colorcat.netbird.platform.Platform
 import java.io.*
 import java.util.*
 
@@ -11,6 +9,17 @@ import java.util.*
  * Created by cxx on 2018/1/17.
  * xx.ch@outlook.com
  */
+internal object EmptyListener : MRequest.Listener<Any?> {
+    override fun onStart() {}
+
+    override fun onSuccess(result: Any?) {}
+
+    override fun onFailure(code: Int, msg: String) {}
+
+    override fun onFinish() {}
+}
+
+
 private val headersComparator = String.CASE_INSENSITIVE_ORDER
 private val parametersComparator = Comparator<String> { str1, str2 -> str1.compareTo(str2) }
 
@@ -79,3 +88,7 @@ internal fun InputStream.justDump(output: OutputStream) {
     }
     bos.flush()
 }
+
+fun isTargetThread() = Platform.get().scheduler().isTargetThread()
+
+fun onTargetThread(runnable: Runnable) = Platform.get().scheduler().onTargetThread(runnable)

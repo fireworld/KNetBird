@@ -17,7 +17,7 @@ internal class RealCall(private val netBird: KNetBird, override val request: Req
     @Throws(IOException::class)
     override fun execute(): Response {
         if (executed.getAndSet(true)) throw IllegalStateException("Already executed")
-        if (!netBird.dispatcher.executed(this)) throw StateIOException(HttpStatus.MSG_DUPLICATE_REQUEST, HttpStatus.CODE_DUPLICATE_REQUEST)
+        if (!netBird.dispatcher.executed(this)) throw StateIOException.duplicateRequest
         try {
             return getResponseWithInterceptorChain()
         } finally {
@@ -91,10 +91,7 @@ internal class RealCall(private val netBird: KNetBird, override val request: Req
             var msg: String? = null
             try {
                 if (this@RealCall.canceled.get()) {
-                    callback.onFailure(
-                            this@RealCall,
-                            StateIOException(HttpStatus.MSG_REQUEST_CANCELED, HttpStatus.CODE_REQUEST_CANCELED)
-                    )
+                    callback.onFailure(this@RealCall, StateIOException.requestCanceled)
                 } else {
                     val response = getResponseWithInterceptorChain()
                     code = response.code

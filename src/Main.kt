@@ -1,6 +1,8 @@
-import cc.colorcat.netbird.*
-import cc.colorcat.netbird.internal.StateIOException
-import java.nio.charset.Charset
+import cc.colorcat.netbird.DownloadListener
+import cc.colorcat.netbird.FileParser
+import cc.colorcat.netbird.KNetBird
+import cc.colorcat.netbird.MRequest
+import java.io.File
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -18,31 +20,32 @@ fun main(args: Array<String>) {
     val log = Logger.getLogger("KNetBird")
     val url = "http://www.baidu.com"
     val netBird = KNetBird.Builder(url).build()
-    val request = Request.Builder()
-            .url("http://www.pconline.com.cn")
-            .get()
+    val qq = "https://dldir1.qq.com/invc/tt/QQBrowser_Setup_9.7.12672.400.exe"
+    val savePath = "/home/cxx/qq.exe"
+    val request = MRequest.Builder(FileParser.create(savePath))
+            .url(qq)
+            .downloadListener(object : DownloadListener {
+                override fun onChanged(finished: Long, total: Long, percent: Int) {
+                    log.log(Level.SEVERE, "download progress, finished=$finished, total=$total, percent=$percent")
+                }
+            })
+            .listener(object : MRequest.Listener<File> {
+                override fun onStart() {
+                    log.log(Level.SEVERE, "onStart")
+                }
+
+                override fun onSuccess(result: File) {
+                    log.log(Level.SEVERE, "download success, save path=$result")
+                }
+
+                override fun onFailure(code: Int, msg: String) {
+                    log.log(Level.SEVERE, "download failure, code=$code, msg=$msg")
+                }
+
+                override fun onFinish() {
+                    log.log(Level.SEVERE, "onFinish")
+                }
+            })
             .build()
-    netBird.newCall(request).enqueue(object : Callback {
-        override fun onStart() {
-            log.log(Level.SEVERE, "onStart")
-            log.log(Level.SEVERE, "------------------")
-        }
-
-        override fun onResponse(call: Call, response: Response) {
-            for ((name, value) in response.headers) {
-                log.log(Level.SEVERE, "$name = $value")
-            }
-            log.log(Level.SEVERE, "---------------------------")
-            log.log(Level.SEVERE, response.responseBody?.string(Charset.forName("GBK")))
-        }
-
-        override fun onFailure(call: Call, e: StateIOException) {
-            log.log(Level.SEVERE, "onFailure")
-        }
-
-        override fun onFinish() {
-            log.log(Level.SEVERE, "onFinish")
-        }
-
-    })
+    netBird.send(request)
 }
