@@ -1,5 +1,6 @@
 package cc.colorcat.netbird
 
+import cc.colorcat.netbird.internal.StateIOException
 import java.io.IOException
 
 /**
@@ -12,7 +13,7 @@ interface Callback {
     @Throws(IOException::class)
     fun onResponse(call: Call, response: Response)
 
-    fun onFailure(call: Call, e: IOException)
+    fun onFailure(call: Call, e: StateIOException)
 
     fun onFinish()
 }

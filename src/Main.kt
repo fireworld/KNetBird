@@ -1,6 +1,5 @@
 import cc.colorcat.netbird.*
-import java.io.IOException
-import java.net.URI
+import cc.colorcat.netbird.internal.StateIOException
 import java.nio.charset.Charset
 import java.util.*
 import java.util.logging.Level
@@ -37,7 +36,7 @@ fun main(args: Array<String>) {
             log.log(Level.SEVERE, response.responseBody?.string(Charset.forName("GBK")))
         }
 
-        override fun onFailure(call: Call, e: IOException) {
+        override fun onFailure(call: Call, e: StateIOException) {
             log.log(Level.SEVERE, "onFailure")
         }
 
