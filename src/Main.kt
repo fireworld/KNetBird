@@ -44,9 +44,9 @@ fun main(args: Array<String>) {
                 }
             })
             .build()
-    val stringReq = MRequest.Builder(StringParser.noCharset)
+    val stringReq = MRequest.Builder(StringParser.create("gbk"))
             .url("http://www.pconline.com.cn")
-            .listener(object : MRequest.Listener<String>{
+            .listener(object : MRequest.Listener<String> {
                 override fun onStart() {
                 }
 
@@ -61,5 +61,5 @@ fun main(args: Array<String>) {
                 }
             })
             .build()
-    netBird.send(fileReq)
+    netBird.send(stringReq)
 }

@@ -5,9 +5,6 @@ package cc.colorcat.knetbird
  * xx.ch@outlook.com
  */
 class NetworkData<out T> private constructor(val code: Int, val msg: String, val data: T?) {
-    val isSuccess
-        get() = data != null
-
     companion object {
         fun <R> newSuccess(data: R): NetworkData<R> = NetworkData(200, "ok", data)
 

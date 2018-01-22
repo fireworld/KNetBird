@@ -15,8 +15,8 @@ import javax.net.ssl.HttpsURLConnection
  * xx.ch@outlook.com
  */
 open class HttpConnection : Connection {
-    companion object {
-        protected var cacheEnabled = false
+    private companion object {
+        private var cacheEnabled = false
     }
 
     private lateinit var conn: HttpURLConnection
@@ -39,14 +39,8 @@ open class HttpConnection : Connection {
         conn.useCaches = cacheEnabled
         if (conn is HttpsURLConnection) {
             val connection = conn as HttpsURLConnection
-            val factory = netBird.sslSocketFactory
-            if (factory != null) {
-                connection.sslSocketFactory = factory
-            }
-            val verifier = netBird.hostnameVerifier
-            if (verifier != null) {
-                connection.hostnameVerifier = verifier
-            }
+            netBird.sslSocketFactory?.apply { connection.sslSocketFactory = this }
+            netBird.hostnameVerifier?.apply { connection.hostnameVerifier = this }
         }
     }
 
@@ -111,6 +105,16 @@ open class HttpConnection : Connection {
             conn.disconnect()
         }
     }
+
+    protected fun cacheEnabled(enabled: Boolean) {
+        HttpConnection.cacheEnabled = enabled
+    }
+
+    protected var cacheEnabled: Boolean
+        get() = HttpConnection.cacheEnabled
+        set(value) {
+            HttpConnection.cacheEnabled = value
+        }
 
     open protected fun enableCache(cachePath: File?, cacheSize: Long) {
         cacheEnabled = cachePath != null && cacheSize > 0

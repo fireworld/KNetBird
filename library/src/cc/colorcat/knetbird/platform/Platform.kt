@@ -7,7 +7,7 @@ import cc.colorcat.knetbird.Connection
  * xx.ch@outlook.com
  */
 abstract class Platform {
-    companion object {
+    internal companion object {
         @Volatile
         internal var platform: Platform? = null
 
@@ -22,14 +22,17 @@ abstract class Platform {
             return platform as Platform
         }
 
-        internal fun findPlatform(): Platform {
-            return GenericPlatform()
+        internal fun findPlatform(): Platform = try {
+            val clazz = Class.forName("cc.colorcat.knetbird.android.AndroidPlatform")
+            clazz.newInstance() as Platform
+        } catch (ignore: Exception) {
+            GenericPlatform()
         }
     }
 
-    abstract fun connection(): Connection
+    abstract val connection: Connection
 
-    abstract fun scheduler(): Scheduler
+    abstract val scheduler: Scheduler
 
-    abstract fun logger(): Logger
+    abstract val logger: Logger
 }

@@ -93,6 +93,6 @@ internal fun InputStream.justDump(output: OutputStream) {
     bos.flush()
 }
 
-fun isTargetThread() = Platform.get().scheduler().isTargetThread()
+fun isTargetThread() = Platform.get().scheduler.isTargetThread()
 
-fun onTargetThread(runnable: Runnable) = Platform.get().scheduler().onTargetThread(runnable)
+fun onTargetThread(runnable: Runnable) = Platform.get().scheduler.onTargetThread(runnable)

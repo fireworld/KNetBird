@@ -4,6 +4,7 @@ import cc.colorcat.knetbird.internal.close
 import cc.colorcat.knetbird.internal.justDump
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.OutputStream
 
 /**
@@ -23,6 +24,7 @@ class FileParser private constructor(private val savePath: File) : Parser<File> 
         fun create(savePath: String) = create(File(savePath))
     }
 
+    @Throws(IOException::class)
     override fun parse(response: Response): NetworkData<File> {
         var output: OutputStream? = null
         var body: ResponseBody? = null

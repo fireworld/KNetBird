@@ -91,7 +91,7 @@ class KNetBird(builder: Builder) : Call.Factory {
             this.tailInterceptors = ArrayList(2)
             this.executor = null
             this.dispatcher = Dispatcher()
-            this.connection = this.platform.connection()
+            this.connection = this.platform.connection
             this.proxy = null
             this.sslSocketFactory = null
             this.hostnameVerifier = null
@@ -126,7 +126,7 @@ class KNetBird(builder: Builder) : Call.Factory {
 
         fun platform(platform: Platform): Builder {
             this.platform = platform
-            this.connection = platform.connection()
+            this.connection = platform.connection
             return this
         }
 
