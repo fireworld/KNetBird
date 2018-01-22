@@ -22,11 +22,13 @@ class BitmapParser private constructor(
 
     override fun parse(response: Response): NetworkData<Bitmap> {
         val body = response.responseBody as ResponseBody
-        val bitmap = if (reqWidth > 0 && reqHeight > 0) {
-            val bytes = body.bytes()
-            decodeStream(ByteArrayInputStream(bytes), reqWidth, reqHeight)
-        } else {
-            BitmapFactory.decodeStream(body.stream())
+        val bitmap: Bitmap? = body.use {
+            if (reqWidth > 0 && reqHeight > 0) {
+                val bytes = it.bytes()
+                decodeStream(ByteArrayInputStream(bytes), reqWidth, reqHeight)
+            } else {
+                BitmapFactory.decodeStream(it.stream())
+            }
         }
         return if (bitmap != null) {
             NetworkData.newSuccess(bitmap)
@@ -49,31 +51,23 @@ class BitmapParser private constructor(
 
         @Throws(IOException::class)
         private fun decodeStream(input: InputStream, reqWidth: Int, reqHeight: Int): Bitmap? {
-            var result: Bitmap? = null
             val bis = BufferedInputStream(input)
             bis.mark(bis.available())
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
             BitmapFactory.decodeStream(bis, null, options)
-            if (options.outWidth != -1 && options.outHeight != -1) {
-                options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
-                options.inJustDecodeBounds = false
-                bis.reset()
-                result = BitmapFactory.decodeStream(bis, null, options)
-            }
-            return result
+            bis.reset()
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
+            options.inJustDecodeBounds = false
+            return BitmapFactory.decodeStream(bis, null, options)
         }
 
         private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
-            val height = options.outHeight
             val width = options.outWidth
+            val height = options.outHeight
             var inSampleSize = 1
-            if (height > reqHeight || width > reqWidth) {
-                val halfHeight = height shr 1
-                val halfWidth = width shr 1
-                while (halfHeight / inSampleSize > reqHeight && halfWidth / inSampleSize > reqWidth) {
-                    inSampleSize = inSampleSize shl 1
-                }
+            while (width / inSampleSize > reqWidth && height / inSampleSize > reqHeight) {
+                inSampleSize = inSampleSize shl 1
             }
             return inSampleSize
         }
