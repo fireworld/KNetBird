@@ -1,7 +1,6 @@
 package cc.colorcat.netbird
 
 import cc.colorcat.netbird.internal.ByteOutputStream
-import cc.colorcat.netbird.internal.emptyOutputStream
 import cc.colorcat.netbird.internal.mutableParametersOf
 import cc.colorcat.netbird.internal.smartEncode
 import java.io.ByteArrayOutputStream
@@ -39,7 +38,7 @@ internal class FormBody private constructor(internal val parameters: Parameters)
     @Throws(IOException::class)
     override fun contentLength(): Long {
         if (contentLength == -1L) {
-            val length = writeOrCountBytes(emptyOutputStream, true)
+            val length = writeOrCountBytes(null, true)
             if (length > 0L) {
                 contentLength = length
             }
@@ -53,10 +52,10 @@ internal class FormBody private constructor(internal val parameters: Parameters)
     }
 
     @Throws(IOException::class)
-    private fun writeOrCountBytes(output: OutputStream, countBytes: Boolean): Long {
+    private fun writeOrCountBytes(output: OutputStream?, countBytes: Boolean): Long {
         var byteCount = 0L
 
-        val os = if (countBytes) ByteArrayOutputStream() else output
+        val os = if (countBytes) ByteArrayOutputStream() else output as OutputStream
         val bos = ByteOutputStream(os)
 
         for (i in 0 until parameters.size) {

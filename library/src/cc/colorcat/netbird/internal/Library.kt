@@ -11,12 +11,6 @@ import java.util.*
  * Created by cxx on 2018/1/17.
  * xx.ch@outlook.com
  */
-internal val emptyOutputStream = object : OutputStream() {
-    @Throws(IOException::class)
-    override fun write(b: Int) {
-    }
-}
-
 private val headersComparator = String.CASE_INSENSITIVE_ORDER
 private val parametersComparator = Comparator<String> { str1, str2 -> str1.compareTo(str2) }
 

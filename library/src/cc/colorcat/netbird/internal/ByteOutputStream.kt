@@ -50,5 +50,6 @@ internal class ByteOutputStream(output: OutputStream) : FilterOutputStream(outpu
         this.write(c.toInt())
     }
 
+    @Synchronized
     fun size() = written
 }
