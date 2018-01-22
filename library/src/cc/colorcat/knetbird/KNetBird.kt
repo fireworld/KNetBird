@@ -1,5 +1,6 @@
 package cc.colorcat.knetbird
 
+import cc.colorcat.knetbird.internal.Log
 import cc.colorcat.knetbird.internal.checkedHttpUrl
 import cc.colorcat.knetbird.internal.toImmutableList
 import cc.colorcat.knetbird.platform.Platform
@@ -40,6 +41,7 @@ class KNetBird(builder: Builder) : Call.Factory {
         dispatcher.setMaxRunning(maxRunning)
         dispatcher.setExecutor(executor)
         Platform.platform = this.platform
+        Log.threshold = builder.logLevel
     }
 
     override fun newCall(request: Request): Call = RealCall(this, request)
@@ -83,6 +85,7 @@ class KNetBird(builder: Builder) : Call.Factory {
         internal var connectTimeOut: Int
         internal var exceptionLogEnabled: Boolean
         internal var gzipEnabled: Boolean
+        internal var logLevel: Level
 
         constructor(baseUrl: String) {
             this.platform = Platform.findPlatform()
@@ -102,6 +105,7 @@ class KNetBird(builder: Builder) : Call.Factory {
             this.connectTimeOut = 10000
             this.exceptionLogEnabled = true
             this.gzipEnabled = false
+            this.logLevel = Level.NOTHING
         }
 
         internal constructor(netBird: KNetBird) {
@@ -122,6 +126,7 @@ class KNetBird(builder: Builder) : Call.Factory {
             this.connectTimeOut = netBird.connectTimeOut
             this.exceptionLogEnabled = netBird.exceptionLogEnabled
             this.gzipEnabled = netBird.gzipEnabled
+            this.logLevel = Log.threshold
         }
 
         fun platform(platform: Platform): Builder {

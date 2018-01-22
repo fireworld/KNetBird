@@ -1,6 +1,6 @@
 package cc.colorcat.knetbird
 
-import cc.colorcat.knetbird.internal.EmptyListener
+import cc.colorcat.knetbird.internal.emptyListener
 import java.io.File
 
 /**
@@ -63,7 +63,7 @@ class MRequest<T> internal constructor(builder: Builder<T>) : Request(builder) {
 
         constructor(parser: Parser<T>) : super() {
             this.parser = parser
-            this.listener = EmptyListener
+            this.listener = emptyListener
         }
 
         internal constructor(request: MRequest<T>) : super(request) {

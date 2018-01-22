@@ -1,5 +1,6 @@
 package cc.colorcat.knetbird
 
+import cc.colorcat.knetbird.internal.Log
 import cc.colorcat.knetbird.internal.StateIOException
 import cc.colorcat.knetbird.internal.close
 import java.io.IOException
@@ -99,7 +100,7 @@ internal class RealCall(private val netBird: KNetBird, override val request: Req
                     callback.onResponse(this@RealCall, response)
                 }
             } catch (e: IOException) {
-                e.printStackTrace() // TODO 稍后需要更改
+                Log.e(e)
                 msg = if (msg == null) {
                     e.message ?: HttpStatus.MSG_CONNECT_ERROR
                 } else {
