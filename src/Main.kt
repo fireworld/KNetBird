@@ -1,4 +1,4 @@
-import cc.colorcat.netbird.*
+import cc.colorcat.knetbird.*
 import java.io.File
 import java.util.*
 import java.util.logging.Level
@@ -61,5 +61,5 @@ fun main(args: Array<String>) {
                 }
             })
             .build()
-    netBird.send(stringReq)
+    netBird.send(fileReq)
 }

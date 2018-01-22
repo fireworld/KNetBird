@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/KNetBird.iml" filepath="$PROJECT_DIR$/KNetBird.iml" />
+      <module fileurl="file://$PROJECT_DIR$/knetbird-android-support/knetbird-android-support.iml" filepath="$PROJECT_DIR$/knetbird-android-support/knetbird-android-support.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
     </modules>
   </component>
