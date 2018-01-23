@@ -55,7 +55,7 @@ class Dispatcher {
 
     private fun onDuplicateRequest(asyncCall: RealCall.AsyncCall) {
         val callback = asyncCall.callback
-        callback.onFailure(asyncCall.call, StateIOException.duplicateRequest)
+        callback.onFailure(asyncCall.call, StateIOException.DuplicateRequest)
         callback.onFinish()
     }
 

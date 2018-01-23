@@ -34,7 +34,7 @@ internal class MutablePair internal constructor(
 
     override fun addAll(names: List<String>, values: List<String>) {
         if (names.size != values.size) {
-            throw IllegalArgumentException("names.size != values.size")
+            throw IllegalArgumentException("names.size(${names.size}) != values.size${values.size}")
         }
         this.names.addAll(names)
         this.values.addAll(values)
@@ -68,7 +68,7 @@ internal class MutablePair internal constructor(
         private val valuesItr = values.listIterator()
 
         override fun hasNext(): Boolean {
-            val result = namesItr.hasNext()
+            val result = namesItr.hasNext() && valuesItr.hasNext()
             check()
             return result
         }
@@ -111,9 +111,5 @@ internal class MutablePair internal constructor(
         result = 31 * result + names.hashCode()
         result = 31 * result + values.hashCode()
         return result
-    }
-
-    override fun toString(): String {
-        return "MutablePair(names=$names, values=$values)"
     }
 }

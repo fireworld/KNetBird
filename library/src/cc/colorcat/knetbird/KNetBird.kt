@@ -40,8 +40,8 @@ class KNetBird(builder: Builder) : Call.Factory {
     init {
         dispatcher.setMaxRunning(maxRunning)
         dispatcher.setExecutor(executor)
-        Platform.platform = this.platform
-        Log.threshold = builder.logLevel
+        Platform.Instance = this.platform
+        Log.Threshold = builder.logLevel
     }
 
     override fun newCall(request: Request): Call = RealCall(this, request)
@@ -126,7 +126,7 @@ class KNetBird(builder: Builder) : Call.Factory {
             this.connectTimeOut = netBird.connectTimeOut
             this.exceptionLogEnabled = netBird.exceptionLogEnabled
             this.gzipEnabled = netBird.gzipEnabled
-            this.logLevel = Log.threshold
+            this.logLevel = Log.Threshold
         }
 
         fun platform(platform: Platform): Builder {

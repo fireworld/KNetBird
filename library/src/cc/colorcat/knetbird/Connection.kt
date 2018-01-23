@@ -32,4 +32,7 @@ interface Connection : Closeable, Cloneable {
     fun cancel()
 
     public override fun clone(): Connection
+
+    @Throws(IOException::class)
+    override fun close()
 }

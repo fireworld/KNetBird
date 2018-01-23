@@ -30,7 +30,7 @@ open class Parameters internal constructor(protected open val pair: Pair) : Pair
         return pair.hashCode()
     }
 
-    override fun toString(): String {
-        return "Parameters(pair=$pair)"
+    final override fun toString(): String {
+        return "${javaClass.simpleName}(${pair.string(", ")})"
     }
 }
