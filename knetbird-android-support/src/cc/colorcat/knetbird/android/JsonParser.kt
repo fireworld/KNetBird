@@ -13,15 +13,16 @@ import java.nio.charset.Charset
  * Created by cxx on 18-1-22.
  * xx.ch@outlook.com
  */
-class JsonParser private constructor(private val charset: Charset = Charsets.UTF_8) : Parser<JSONObject> {
+class JsonParser private constructor(private val charset: Charset) : Parser<JSONObject> {
     companion object {
-        val utf8 by lazy { JsonParser() }
+        val utf8 by lazy { JsonParser(Charsets.UTF_8) }
 
         fun create(charset: Charset) = if (charset == Charsets.UTF_8) utf8 else JsonParser(charset)
 
         fun create(charset: String) = create(Charset.forName(charset))
     }
 
+    @Throws(IOException::class)
     override fun parse(response: Response): NetworkData<JSONObject> {
         val body = response.responseBody as ResponseBody
         try {

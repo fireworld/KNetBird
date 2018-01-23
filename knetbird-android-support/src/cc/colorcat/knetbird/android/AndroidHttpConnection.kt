@@ -27,7 +27,6 @@ class AndroidHttpConnection : HttpConnection() {
                 } catch (e: Exception) {
                     cacheEnabled = false
                 }
-
             }
         } else if (cacheEnabled) {
             cacheEnabled = false

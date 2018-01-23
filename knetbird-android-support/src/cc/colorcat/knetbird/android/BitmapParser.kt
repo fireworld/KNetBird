@@ -15,11 +15,9 @@ import java.io.InputStream
  * Created by cxx on 18-1-22.
  * xx.ch@outlook.com
  */
-class BitmapParser private constructor(
-        private val reqWidth: Int = -1,
-        private val reqHeight: Int = -1
-) : Parser<Bitmap> {
+class BitmapParser private constructor(private val reqWidth: Int = -1, private val reqHeight: Int = -1) : Parser<Bitmap> {
 
+    @Throws(IOException::class)
     override fun parse(response: Response): NetworkData<Bitmap> {
         val body = response.responseBody as ResponseBody
         val bitmap: Bitmap? = body.use {

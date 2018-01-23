@@ -27,15 +27,12 @@ class FileParser private constructor(private val savePath: File) : Parser<File> 
     @Throws(IOException::class)
     override fun parse(response: Response): NetworkData<File> {
         var output: OutputStream? = null
-        var body: ResponseBody? = null
         try {
             output = FileOutputStream(savePath)
-            body = response.responseBody as ResponseBody
-            body.stream().justDump(output)
+            response.responseBody?.stream()?.justDump(output)
             return NetworkData.newSuccess(savePath)
         } finally {
             close(output)
-            close(body)
         }
     }
 }
