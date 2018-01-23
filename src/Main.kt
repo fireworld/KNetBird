@@ -62,5 +62,7 @@ fun main(args: Array<String>) {
             })
             .build()
 //    netBird.send(stringReq)
-    netBird.send(fileReq)
+//    netBird.send(fileReq)
+    val test = CharArray(80) { '+' }.let { String(it) }
+    println(test)
 }
