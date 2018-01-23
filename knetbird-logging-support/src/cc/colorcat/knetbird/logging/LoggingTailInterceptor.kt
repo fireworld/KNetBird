@@ -11,7 +11,7 @@ import java.nio.charset.Charset
  * xx.ch@outlook.com
  */
 class LoggingTailInterceptor(
-        private val filter: ContentFilter,
+        private val filter: ContentFilter = object : ContentFilter {},
         private val charsetIfAbsent: Charset = Charsets.UTF_8
 ) : Interceptor {
 
@@ -48,27 +48,25 @@ class LoggingTailInterceptor(
         return response
     }
 
-    private fun logPair(type: String, pair: PairReader, level: Level) {
-        for ((name, value) in pair) {
-            log("$type --> $name = $value", level)
-        }
-    }
-
-    private fun logFiles(fileBodies: List<FileBody>, level: Level) {
-        for (body in fileBodies) {
-            log("request file --> $body", level)
-        }
-    }
-
-    private fun log(msg: String, level: Level) {
-        Platform.get().logger.log(TAG, msg, level)
-    }
-
     private companion object {
         const val TAG = "KNetBird"
-        val LINE = buildLine(80, '-')
-        val HALF_LINE = buildLine(38, '-')
+        const val LINE = "--------------------------------------------------------------------------------"
+        const val HALF_LINE = "--------------------------------------"
 
-        private fun buildLine(count: Int, c: Char): String = CharArray(count) { c }.let { String(it) }
+        private fun logPair(type: String, pair: PairReader, level: Level) {
+            for ((name, value) in pair) {
+                log("$type --> $name = $value", level)
+            }
+        }
+
+        private fun logFiles(fileBodies: List<FileBody>, level: Level) {
+            for (body in fileBodies) {
+                log("request file --> $body", level)
+            }
+        }
+
+        private fun log(msg: String, level: Level) {
+            Platform.get().logger.log(TAG, msg, level)
+        }
     }
 }
