@@ -20,16 +20,14 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
         var url = uri.toString()
 
         if (!builder.method.needBody()) {
-            val parameters = concatParameters(builder.names(), builder.values())
-            if (parameters != null) {
-                url = url + '?' + parameters
+            concatParameters(builder.names(), builder.values())?.also {
+                url = url + '?' + it
                 builder.clear()
             }
         } else {
-            val body = builder.requestBody
-            if (body != null) {
-                builder.setHeader(Headers.CONTENT_TYPE, body.contentType())
-                val contentLength = body.contentLength()
+            builder.requestBody?.also {
+                builder.setHeader(Headers.CONTENT_TYPE, it.contentType())
+                val contentLength = it.contentLength()
                 if (contentLength > 0L) {
                     builder.setHeader(Headers.CONTENT_LENGTH, contentLength.toString())
                             .removeHeader("Transfer-Encoding")
@@ -43,15 +41,14 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
                 .path("")
                 .addHeaderIfNot("Connection", "Keep-Alive")
                 .addHeaderIfNot("User-Agent", Version.userAgent())
+
         var response = chain.proceed(builder.build().freeze())
-        val listener = builder.downloadListener
-        if (listener != null) {
-            val original = response.responseBody
-            if (original != null) {
-                val contentLength = original.contentLength()
+        builder.downloadListener?.also {
+            response.responseBody?.apply {
+                val contentLength = this.contentLength()
                 if (contentLength > 0L) {
-                    val newStream = ProgressInputStream.wrap(original.stream(), contentLength, listener)
-                    val newBody = ResponseBody.create(newStream, response.headers)
+                    val newStream = ProgressInputStream.wrap(this.stream(), contentLength, it)
+                    val newBody = ResponseBody.create(newStream, this.contentType(), contentLength, this.charset())
                     response = response.newBuilder().responseBody(newBody).build()
                 }
             }
