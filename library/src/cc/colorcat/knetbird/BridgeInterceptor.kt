@@ -13,11 +13,9 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request
-        val builder = request.newBuilder()
+        val builder = chain.request.newBuilder()
         var uri = URI.create(builder.url.takeUnless { it.isEmpty() } ?: baseUrl)
-        val path = builder.path
-        if (!path.isEmpty()) uri = uri.resolve(path)
+        if (!builder.path.isEmpty()) uri = uri.resolve(builder.path)
         var url = uri.toString()
 
         if (!builder.method.needBody()) {
@@ -27,7 +25,7 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
                 builder.clear()
             }
         } else {
-            val body = request.requestBody
+            val body = builder.requestBody
             if (body != null) {
                 builder.setHeader(Headers.CONTENT_TYPE, body.contentType())
                 val contentLength = body.contentLength()
@@ -47,11 +45,11 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
         return chain.proceed(builder.build().freeze())
     }
 
-    companion object {
+    private companion object {
         private fun concatParameters(names: List<String>, values: List<String>): String? {
             if (names.isEmpty()) return null
             val sb = StringBuilder()
-            for (i in 0 until names.size) {
+            for (i in names.indices) {
                 if (i > 0) sb.append('&')
                 val encodedName = smartEncode(names[i])
                 val encodedValue = smartEncode(values[i])

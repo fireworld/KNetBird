@@ -13,7 +13,7 @@ interface Callback {
     @Throws(IOException::class)
     fun onResponse(call: Call, response: Response)
 
-    fun onFailure(call: Call, e: StateIOException)
+    fun onFailure(call: Call, cause: StateIOException)
 
     fun onFinish()
 }

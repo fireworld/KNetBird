@@ -157,6 +157,20 @@ private fun checkSize(names: List<String>, values: List<String>) {
 }
 
 
+internal fun buildRequestBody(parameters: Parameters, fileBodies: List<FileBody>, boundary: String): RequestBody? {
+    if (parameters.isEmpty && fileBodies.isEmpty()) {
+        return null
+    }
+    if (parameters.isEmpty && fileBodies.size == 1) {
+        return fileBodies[0]
+    }
+    if (!parameters.isEmpty && fileBodies.isEmpty()) {
+        return FormBody.create(parameters, true)
+    }
+    return MultipartBody.create(FormBody.create(parameters, false), fileBodies, boundary)
+}
+
+
 internal fun <T> List<T>.toImmutableList(): List<T> = Collections.unmodifiableList(ArrayList(this))
 
 @Throws(IOException::class)

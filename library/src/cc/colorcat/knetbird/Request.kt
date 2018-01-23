@@ -18,7 +18,7 @@ open class Request protected constructor(builder: Builder) {
     val tag = builder.tag
     internal val boundary = builder.boundary
     internal val requestBody: RequestBody? by lazy {
-        parseBody()
+        buildRequestBody(parameters, fileBodies, boundary)
     }
     var freeze = false
         private set
@@ -33,24 +33,11 @@ open class Request protected constructor(builder: Builder) {
         return this
     }
 
-    private fun parseBody(): RequestBody? {
-        if (parameters.isEmpty && fileBodies.isEmpty()) {
-            return null
-        }
-        if (parameters.isEmpty && fileBodies.size == 1) {
-            return fileBodies[0]
-        }
-        if (!parameters.isEmpty && fileBodies.isEmpty()) {
-            FormBody.create(parameters, true)
-        }
-        return MultipartBody.create(FormBody.create(parameters, false), fileBodies, boundary)
-    }
-
     open fun newBuilder(): Builder {
         if (freeze) {
             throw IllegalStateException("The request has been frozen, call freeze to check.")
         }
-        return Builder.newBuilder(this)
+        return Builder(this)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -108,12 +95,12 @@ open class Request protected constructor(builder: Builder) {
             get() = _headers.toHeaders()
         var downloadListener: DownloadListener?
             private set
-        internal val boundary: String
+        internal lateinit var boundary: String
+            private set
         var tag: Any
             private set
-
-        companion object {
-            internal fun newBuilder(request: Request) = Builder(request)
+        internal val requestBody: RequestBody? by lazy {
+            buildRequestBody(parameters, fileBodies, boundary)
         }
 
         constructor() {
@@ -128,7 +115,7 @@ open class Request protected constructor(builder: Builder) {
             this.tag = this.boundary
         }
 
-        protected constructor(request: Request) {
+        internal constructor(request: Request) {
             this.url = request.url
             this.path = request.path
             this.method = request.method

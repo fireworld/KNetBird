@@ -34,7 +34,6 @@ class KNetBird(builder: Builder) : Call.Factory {
     val maxRunning = builder.maxRunning
     val readTimeOut = builder.readTimeOut
     val connectTimeOut = builder.connectTimeOut
-    val exceptionLogEnabled = builder.exceptionLogEnabled
     val gzipEnabled = builder.gzipEnabled
 
     init {
@@ -83,7 +82,6 @@ class KNetBird(builder: Builder) : Call.Factory {
         internal var maxRunning: Int
         internal var readTimeOut: Int
         internal var connectTimeOut: Int
-        internal var exceptionLogEnabled: Boolean
         internal var gzipEnabled: Boolean
         internal var logLevel: Level
 
@@ -103,7 +101,6 @@ class KNetBird(builder: Builder) : Call.Factory {
             this.maxRunning = 6
             this.readTimeOut = 10000
             this.connectTimeOut = 10000
-            this.exceptionLogEnabled = true
             this.gzipEnabled = false
             this.logLevel = Level.NOTHING
         }
@@ -124,7 +121,6 @@ class KNetBird(builder: Builder) : Call.Factory {
             this.maxRunning = netBird.maxRunning
             this.readTimeOut = netBird.readTimeOut
             this.connectTimeOut = netBird.connectTimeOut
-            this.exceptionLogEnabled = netBird.exceptionLogEnabled
             this.gzipEnabled = netBird.gzipEnabled
             this.logLevel = Log.Threshold
         }
@@ -213,11 +209,6 @@ class KNetBird(builder: Builder) : Call.Factory {
                 throw IllegalArgumentException("connectTimeOut($milliseconds) <= 0")
             }
             this.connectTimeOut = milliseconds
-            return this
-        }
-
-        fun enableExceptionLog(enabled: Boolean): Builder {
-            this.exceptionLogEnabled = enabled
             return this
         }
 

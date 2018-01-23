@@ -33,8 +33,8 @@ internal class MCallback<T> internal constructor(
         }
     }
 
-    override fun onFailure(call: Call, e: StateIOException) {
-        data = NetworkData.newFailure(e.state, e.message ?: "")
+    override fun onFailure(call: Call, cause: StateIOException) {
+        data = NetworkData.newFailure(cause.state, cause.message ?: "")
     }
 
     override fun onFinish() {
