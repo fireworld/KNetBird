@@ -8,7 +8,7 @@ import cc.colorcat.knetbird.internal.onTargetThread
  * xx.ch@outlook.com
  */
 internal class MUploadListener(private val listener: UploadListener) : UploadListener {
-    companion object {
+    internal companion object {
         internal fun wrap(listener: UploadListener?): UploadListener? = listener?.let { MUploadListener(listener) }
     }
 

@@ -19,7 +19,8 @@ class FileBody private constructor(
         private val listener: UploadListener?
 ) : RequestBody() {
 
-    companion object {
+    internal companion object {
+        @Throws(FileNotFoundException::class)
         internal fun create(name: String, contentType: String, file: File, listener: UploadListener?): FileBody {
             if (!file.exists()) {
                 throw FileNotFoundException("${file.absolutePath} is not exists")

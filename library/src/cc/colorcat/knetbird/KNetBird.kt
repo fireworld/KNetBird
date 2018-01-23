@@ -222,7 +222,7 @@ class KNetBird(builder: Builder) : Call.Factory {
             return KNetBird(this)
         }
 
-        companion object {
+        private companion object {
             private fun defaultService(corePoolSize: Int): ExecutorService {
                 val executor = ThreadPoolExecutor(
                         corePoolSize,

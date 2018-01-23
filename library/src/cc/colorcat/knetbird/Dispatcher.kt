@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService
  * Created by cxx on 2018/1/19.
  * xx.ch@outlook.com
  */
-class Dispatcher {
+class Dispatcher internal constructor() {
     private lateinit var executor: ExecutorService
     private var maxRunning: Int = 6
     private val waitingAsyncCalls: Queue<RealCall.AsyncCall> = ConcurrentLinkedQueue()
