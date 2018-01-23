@@ -17,11 +17,11 @@ import javax.net.ssl.HttpsURLConnection
 open class HttpConnection : Connection {
     private lateinit var conn: HttpURLConnection
     private var input: InputStream? = null
-    private var listener: DownloadListener? = null
+//    private var listener: DownloadListener? = null
 
     @Throws(IOException::class)
     override fun connect(netBird: KNetBird, request: Request) {
-        listener = request.downloadListener
+//        listener = request.downloadListener
         enableCache(netBird.cachePath, netBird.cacheSize)
         val url = URL(request.url)
         val proxy = netBird.proxy
@@ -78,7 +78,8 @@ open class HttpConnection : Connection {
             input = conn.inputStream
         }
         return if (input != null) {
-            RealResponseBody.create(input as InputStream, headers, listener)
+//            RealResponseBody.create(input as InputStream, headers, listener)
+            ResponseBody.Companion.create(input as InputStream, headers)
         } else {
             null
         }

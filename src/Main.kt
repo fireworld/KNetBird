@@ -16,7 +16,7 @@ fun <T> List<T>.toImmutableList(): List<T> {
 fun main(args: Array<String>) {
     val log = Logger.getLogger("KNetBird")
     val url = "http://www.baidu.com"
-    val netBird = KNetBird.Builder(url).build()
+    val netBird = KNetBird.Builder(url).enableGzip(true).build()
     val qq = "https://dldir1.qq.com/invc/tt/QQBrowser_Setup_9.7.12672.400.exe"
     val savePath = "/home/cxx/qq.exe"
     val fileReq = MRequest.Builder(FileParser.create(savePath))
@@ -61,5 +61,6 @@ fun main(args: Array<String>) {
                 }
             })
             .build()
-    netBird.send(stringReq)
+//    netBird.send(stringReq)
+    netBird.send(fileReq)
 }

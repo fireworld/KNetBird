@@ -1,5 +1,6 @@
 package cc.colorcat.knetbird
 
+import cc.colorcat.knetbird.internal.ProgressInputStream
 import cc.colorcat.knetbird.internal.Version
 import cc.colorcat.knetbird.internal.smartEncode
 import java.io.IOException
@@ -42,7 +43,20 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
                 .path("")
                 .addHeaderIfNot("Connection", "Keep-Alive")
                 .addHeaderIfNot("User-Agent", Version.userAgent())
-        return chain.proceed(builder.build().freeze())
+        var response = chain.proceed(builder.build().freeze())
+        val listener = builder.downloadListener
+        if (listener != null) {
+            val original = response.responseBody
+            if (original != null) {
+                val contentLength = original.contentLength()
+                if (contentLength > 0L) {
+                    val newStream = ProgressInputStream.wrap(original.stream(), contentLength, listener)
+                    val newBody = ResponseBody.create(newStream, response.headers)
+                    response = response.newBuilder().responseBody(newBody).build()
+                }
+            }
+        }
+        return response
     }
 
     private companion object {
