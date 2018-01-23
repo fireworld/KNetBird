@@ -64,5 +64,17 @@ abstract class ResponseBody : Closeable {
                 override fun stream() = input
             }
         }
+
+        fun create(input: InputStream, headers: Headers): ResponseBody {
+            return object : ResponseBody() {
+                override fun contentType(): String? = headers.contentType()
+
+                override fun contentLength(): Long = headers.contentLength()
+
+                override fun charset(): Charset? = headers.charset()
+
+                override fun stream(): InputStream = input
+            }
+        }
     }
 }

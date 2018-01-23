@@ -12,8 +12,7 @@ import java.io.OutputStream
  * xx.ch@outlook.com
  */
 internal class FormBody private constructor(internal val parameters: Parameters) : RequestBody() {
-
-    companion object {
+    internal companion object {
         const val CONTENT_TYPE = "application/x-www-form-urlencoded"
 //        const val CONTENT_TYPE = "text/plain; charset=UTF-8"
 

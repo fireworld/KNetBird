@@ -10,12 +10,12 @@ import cc.colorcat.knetbird.platform.Scheduler
  */
 class AndroidScheduler : Scheduler {
     override fun onTargetThread(runnable: Runnable) {
-        AndroidScheduler.handler.post(runnable)
+        AndroidScheduler.Handler.post(runnable)
     }
 
     override fun isTargetThread(): Boolean = Looper.myLooper() == Looper.getMainLooper()
 
     private companion object {
-        private val handler = Handler(Looper.getMainLooper())
+        private val Handler = Handler(Looper.getMainLooper())
     }
 }

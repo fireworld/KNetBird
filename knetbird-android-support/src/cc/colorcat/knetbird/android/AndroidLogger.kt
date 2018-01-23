@@ -9,6 +9,7 @@ import cc.colorcat.knetbird.platform.Logger
  * xx.ch@outlook.com
  */
 class AndroidLogger : Logger {
+
     override fun log(tag: String, msg: String, level: Level) {
         val priority = when (level) {
             Level.VERBOSE -> Log.VERBOSE

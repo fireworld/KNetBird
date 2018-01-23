@@ -12,8 +12,8 @@ import java.util.logging.LogRecord
  */
 class GenericLogger : Logger {
 
-    companion object {
-        private val logger = java.util.logging.Logger.getLogger(KNetBird::class.simpleName)
+    private companion object {
+        private val Logger = java.util.logging.Logger.getLogger(KNetBird::class.simpleName)
 
         init {
             val level = java.util.logging.Level.ALL
@@ -21,23 +21,23 @@ class GenericLogger : Logger {
                 @Synchronized
                 override fun format(record: LogRecord?) = record?.message + "\n"
             }
-            logger.useParentHandlers = false
+            Logger.useParentHandlers = false
             val handler = ConsoleHandler()
             handler.formatter = formatter;
             handler.level = level
-            logger.addHandler(handler)
-            logger.level = level
+            Logger.addHandler(handler)
+            Logger.level = level
         }
     }
 
     override fun log(tag: String, msg: String, level: Level) {
         val log = "$tag --> $msg"
         when (level) {
-            Level.VERBOSE -> logger.log(java.util.logging.Level.FINE, log)
-            Level.DEBUG -> logger.log(java.util.logging.Level.CONFIG, log)
-            Level.INFO -> logger.log(java.util.logging.Level.INFO, log)
-            Level.WARN -> logger.log(java.util.logging.Level.WARNING, log)
-            Level.ERROR -> logger.log(java.util.logging.Level.SEVERE, log)
+            Level.VERBOSE -> Logger.log(java.util.logging.Level.FINE, log)
+            Level.DEBUG -> Logger.log(java.util.logging.Level.CONFIG, log)
+            Level.INFO -> Logger.log(java.util.logging.Level.INFO, log)
+            Level.WARN -> Logger.log(java.util.logging.Level.WARNING, log)
+            Level.ERROR -> Logger.log(java.util.logging.Level.SEVERE, log)
             Level.NOTHING -> Unit
         }
     }

@@ -15,17 +15,11 @@ import javax.net.ssl.HttpsURLConnection
  * xx.ch@outlook.com
  */
 open class HttpConnection : Connection {
-    private companion object {
-        private var cacheEnabled = false
-    }
-
     private lateinit var conn: HttpURLConnection
     private var input: InputStream? = null
-    private var listener: DownloadListener? = null
 
     @Throws(IOException::class)
     override fun connect(netBird: KNetBird, request: Request) {
-        listener = request.downloadListener
         enableCache(netBird.cachePath, netBird.cacheSize)
         val url = URL(request.url)
         val proxy = netBird.proxy
@@ -33,9 +27,8 @@ open class HttpConnection : Connection {
         conn.connectTimeout = netBird.connectTimeOut
         conn.readTimeout = netBird.readTimeOut
         conn.doInput = true
-        val method = request.method
-        conn.requestMethod = method.name
-        conn.doOutput = method.needBody()
+        conn.requestMethod = request.method.name
+        conn.doOutput = request.method.needBody()
         conn.useCaches = cacheEnabled
         if (conn is HttpsURLConnection) {
             val connection = conn as HttpsURLConnection
@@ -73,8 +66,8 @@ open class HttpConnection : Connection {
 
     @Throws(IOException::class)
     override fun responseHeaders(): Headers {
-        val headers = conn.headerFields ?: return Headers.emptyHeaders
-        return headersOf(headers)
+        val headersMultimap = conn.headerFields ?: return Headers.emptyHeaders
+        return headersOf(headersMultimap)
     }
 
     @Throws(IOException::class)
@@ -83,7 +76,7 @@ open class HttpConnection : Connection {
             input = conn.inputStream
         }
         return if (input != null) {
-            RealResponseBody.create(input as InputStream, headers, listener)
+            ResponseBody.create(input as InputStream, headers)
         } else {
             null
         }
@@ -95,9 +88,7 @@ open class HttpConnection : Connection {
         }
     }
 
-    override fun clone(): Connection {
-        return HttpConnection()
-    }
+    override fun clone(): Connection = HttpConnection()
 
     override fun close() {
         cc.colorcat.knetbird.internal.close(input)
@@ -106,14 +97,14 @@ open class HttpConnection : Connection {
         }
     }
 
-    protected fun cacheEnabled(enabled: Boolean) {
-        HttpConnection.cacheEnabled = enabled
+    private companion object {
+        private var CacheEnabled = false
     }
 
     protected var cacheEnabled: Boolean
-        get() = HttpConnection.cacheEnabled
+        get() = HttpConnection.CacheEnabled
         set(value) {
-            HttpConnection.cacheEnabled = value
+            HttpConnection.CacheEnabled = value
         }
 
     open protected fun enableCache(cachePath: File?, cacheSize: Long) {

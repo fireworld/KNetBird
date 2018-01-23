@@ -9,17 +9,17 @@ import cc.colorcat.knetbird.Connection
 abstract class Platform {
     internal companion object {
         @Volatile
-        internal var platform: Platform? = null
+        internal var Instance: Platform? = null
 
         internal fun get(): Platform {
-            if (platform == null) {
+            if (Platform.Instance == null) {
                 synchronized(Platform::class) {
-                    if (platform == null) {
-                        platform = findPlatform()
+                    if (Platform.Instance == null) {
+                        Platform.Instance = findPlatform()
                     }
                 }
             }
-            return platform as Platform
+            return Platform.Instance as Platform
         }
 
         internal fun findPlatform(): Platform = try {

@@ -8,7 +8,7 @@ import cc.colorcat.knetbird.internal.onTargetThread
  * xx.ch@outlook.com
  */
 internal class MDownloadListener(private val listener: DownloadListener) : DownloadListener {
-    companion object {
+    internal companion object {
         internal fun wrap(listener: DownloadListener?): DownloadListener? = listener?.let { MDownloadListener(listener) }
     }
 

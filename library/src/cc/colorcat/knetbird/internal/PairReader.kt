@@ -4,7 +4,7 @@ package cc.colorcat.knetbird.internal
  * Created by cxx on 2018/1/18.
  * xx.ch@outlook.com
  */
-internal interface PairReader : Iterable<NameAndValue> {
+interface PairReader : Iterable<NameAndValue> {
     val size: Int
 
     val isEmpty: Boolean

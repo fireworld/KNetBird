@@ -1,5 +1,6 @@
 package cc.colorcat.knetbird
 
+import cc.colorcat.knetbird.internal.ProgressInputStream
 import cc.colorcat.knetbird.internal.Version
 import cc.colorcat.knetbird.internal.smartEncode
 import java.io.IOException
@@ -13,24 +14,20 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request
-        val builder = request.newBuilder()
+        val builder = chain.request.newBuilder()
         var uri = URI.create(builder.url.takeUnless { it.isEmpty() } ?: baseUrl)
-        val path = builder.path
-        if (!path.isEmpty()) uri = uri.resolve(path)
+        if (!builder.path.isEmpty()) uri = uri.resolve(builder.path)
         var url = uri.toString()
 
         if (!builder.method.needBody()) {
-            val parameters = concatParameters(builder.names(), builder.values())
-            if (parameters != null) {
-                url = url + '?' + parameters
+            concatParameters(builder.names(), builder.values())?.also {
+                url = url + '?' + it
                 builder.clear()
             }
         } else {
-            val body = request.requestBody
-            if (body != null) {
-                builder.setHeader(Headers.CONTENT_TYPE, body.contentType())
-                val contentLength = body.contentLength()
+            builder.requestBody?.also {
+                builder.setHeader(Headers.CONTENT_TYPE, it.contentType())
+                val contentLength = it.contentLength()
                 if (contentLength > 0L) {
                     builder.setHeader(Headers.CONTENT_LENGTH, contentLength.toString())
                             .removeHeader("Transfer-Encoding")
@@ -44,14 +41,26 @@ internal class BridgeInterceptor(private val baseUrl: String) : Interceptor {
                 .path("")
                 .addHeaderIfNot("Connection", "Keep-Alive")
                 .addHeaderIfNot("User-Agent", Version.userAgent())
-        return chain.proceed(builder.build().freeze())
+
+        var response = chain.proceed(builder.build().freeze())
+        builder.downloadListener?.also {
+            response.responseBody?.apply {
+                val contentLength = this.contentLength()
+                if (contentLength > 0L) {
+                    val newStream = ProgressInputStream.wrap(this.stream(), contentLength, it)
+                    val newBody = ResponseBody.create(newStream, this.contentType(), contentLength, this.charset())
+                    response = response.newBuilder().responseBody(newBody).build()
+                }
+            }
+        }
+        return response
     }
 
-    companion object {
+    private companion object {
         private fun concatParameters(names: List<String>, values: List<String>): String? {
             if (names.isEmpty()) return null
             val sb = StringBuilder()
-            for (i in 0 until names.size) {
+            for (i in names.indices) {
                 if (i > 0) sb.append('&')
                 val encodedName = smartEncode(names[i])
                 val encodedValue = smartEncode(values[i])

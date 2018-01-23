@@ -65,7 +65,7 @@ internal open class Pair internal constructor(
         private val valuesItr = values.iterator()
 
         override fun hasNext(): Boolean {
-            val result = namesItr.hasNext()
+            val result = namesItr.hasNext() && valuesItr.hasNext()
             check()
             return result
         }
@@ -81,6 +81,15 @@ internal open class Pair internal constructor(
                 throw ConcurrentModificationException()
             }
         }
+    }
+
+    internal fun string(separator: String): String {
+        val builder = StringBuilder()
+        for (index in names.indices) {
+            if (index > 0) builder.append(separator)
+            builder.append(names[index]).append('=').append(values[index])
+        }
+        return builder.toString()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -101,7 +110,7 @@ internal open class Pair internal constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "Pair(names=$names, values=$values)"
+    final override fun toString(): String {
+        return "${javaClass.simpleName}(${string(", ")})"
     }
 }

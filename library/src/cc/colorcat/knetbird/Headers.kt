@@ -23,6 +23,7 @@ open class Headers internal constructor(protected open val pair: Pair) : PairRea
     fun charset() = parseCharset(pair.value(Headers.CONTENT_TYPE))
 
     fun toMutableHeaders() = MutableHeaders(pair.toMutablePair())
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -38,7 +39,7 @@ open class Headers internal constructor(protected open val pair: Pair) : PairRea
         return pair.hashCode()
     }
 
-    override fun toString(): String {
-        return "Headers(pair=$pair)"
+    final override fun toString(): String {
+        return "${javaClass.simpleName}(${pair.string(", ")})"
     }
 }

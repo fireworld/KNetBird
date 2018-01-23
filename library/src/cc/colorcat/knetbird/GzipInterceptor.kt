@@ -20,18 +20,13 @@ internal class GzipInterceptor(private val gzipEnabled: Boolean) : Interceptor {
         }
         var response = chain.proceed(builder.build().freeze())
         if (transparentGzip && "gzip".equals(response.header("Content-Encoding"), true)) {
-            val original = response.responseBody
-            if (original != null) {
-                val input = GZIPInputStream(original.stream())
-                val newBody = ResponseBody.create(input,
-                        original.contentType(),
-                        original.contentLength(),
-                        original.charset())
-                response = response.newBuilder()
-                        .responseBody(newBody)
+            response.responseBody?.also {
+                val newStream = GZIPInputStream(it.stream())
+                val newBuilder = response.newBuilder()
                         .removeHeader("Content-Encoding")
                         .removeHeader("Content-Length")
-                        .build()
+                val newBody = ResponseBody.create(newStream, newBuilder.headers)
+                response = newBuilder.responseBody(newBody).build()
             }
         }
         return response

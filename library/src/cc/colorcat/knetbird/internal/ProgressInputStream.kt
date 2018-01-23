@@ -7,13 +7,13 @@ import java.io.*
  * Created by cxx on 2018/1/17.
  * xx.ch@outlook.com
  */
-class ProgressInputStream private constructor(
+internal class ProgressInputStream private constructor(
         input: InputStream,
         private val contentLength: Long,
         private val listener: ProgressListener
 ) : FilterInputStream(input) {
 
-    companion object {
+    internal companion object {
         @Throws(FileNotFoundException::class)
         internal fun wrap(file: File, listener: ProgressListener?) = wrap(FileInputStream(file), file.length(), listener)
 

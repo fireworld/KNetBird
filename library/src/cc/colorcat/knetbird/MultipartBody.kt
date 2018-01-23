@@ -2,6 +2,7 @@ package cc.colorcat.knetbird
 
 import cc.colorcat.knetbird.internal.ByteOutputStream
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.io.OutputStream
 
 /**
@@ -11,14 +12,15 @@ import java.io.OutputStream
 internal class MultipartBody private constructor(
         private val formBody: FormBody,
         private val fileBodies: List<FileBody>,
-        private val boundary: String) : RequestBody() {
+        private val boundary: String
+) : RequestBody() {
 
-    companion object {
+    internal companion object {
         private const val MIX = "multipart/form-data; boundary="
         private val CRLF = byteArrayOf('\r'.toByte(), '\n'.toByte())
         private val DASH_DASH = byteArrayOf('-'.toByte(), '-'.toByte())
 
-        fun create(formBody: FormBody, fileBodies: List<FileBody>, boundary: String): MultipartBody {
+        internal fun create(formBody: FormBody, fileBodies: List<FileBody>, boundary: String): MultipartBody {
             return MultipartBody(formBody, fileBodies, boundary)
         }
     }
@@ -27,6 +29,7 @@ internal class MultipartBody private constructor(
 
     override fun contentType() = MultipartBody.MIX + boundary
 
+    @Throws(IOException::class)
     override fun contentLength(): Long {
         if (contentLength == -1L) {
             val length = writeOrCountBytes(null, true)
@@ -37,10 +40,12 @@ internal class MultipartBody private constructor(
         return contentLength
     }
 
+    @Throws(IOException::class)
     override fun writeTo(output: OutputStream) {
         writeOrCountBytes(output, false)
     }
 
+    @Throws(IOException::class)
     private fun writeOrCountBytes(output: OutputStream?, countBytes: Boolean): Long {
         var byteCount = 0L
 

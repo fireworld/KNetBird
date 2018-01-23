@@ -34,14 +34,13 @@ class KNetBird(builder: Builder) : Call.Factory {
     val maxRunning = builder.maxRunning
     val readTimeOut = builder.readTimeOut
     val connectTimeOut = builder.connectTimeOut
-    val exceptionLogEnabled = builder.exceptionLogEnabled
     val gzipEnabled = builder.gzipEnabled
 
     init {
         dispatcher.setMaxRunning(maxRunning)
         dispatcher.setExecutor(executor)
-        Platform.platform = this.platform
-        Log.threshold = builder.logLevel
+        Platform.Instance = this.platform
+        Log.Threshold = builder.logLevel
     }
 
     override fun newCall(request: Request): Call = RealCall(this, request)
@@ -83,7 +82,6 @@ class KNetBird(builder: Builder) : Call.Factory {
         internal var maxRunning: Int
         internal var readTimeOut: Int
         internal var connectTimeOut: Int
-        internal var exceptionLogEnabled: Boolean
         internal var gzipEnabled: Boolean
         internal var logLevel: Level
 
@@ -103,7 +101,6 @@ class KNetBird(builder: Builder) : Call.Factory {
             this.maxRunning = 6
             this.readTimeOut = 10000
             this.connectTimeOut = 10000
-            this.exceptionLogEnabled = true
             this.gzipEnabled = false
             this.logLevel = Level.NOTHING
         }
@@ -124,9 +121,8 @@ class KNetBird(builder: Builder) : Call.Factory {
             this.maxRunning = netBird.maxRunning
             this.readTimeOut = netBird.readTimeOut
             this.connectTimeOut = netBird.connectTimeOut
-            this.exceptionLogEnabled = netBird.exceptionLogEnabled
             this.gzipEnabled = netBird.gzipEnabled
-            this.logLevel = Log.threshold
+            this.logLevel = Log.Threshold
         }
 
         fun platform(platform: Platform): Builder {
@@ -216,11 +212,6 @@ class KNetBird(builder: Builder) : Call.Factory {
             return this
         }
 
-        fun enableExceptionLog(enabled: Boolean): Builder {
-            this.exceptionLogEnabled = enabled
-            return this
-        }
-
         fun enableGzip(enabled: Boolean): Builder {
             this.gzipEnabled = enabled
             return this
@@ -231,7 +222,7 @@ class KNetBird(builder: Builder) : Call.Factory {
             return KNetBird(this)
         }
 
-        companion object {
+        private companion object {
             private fun defaultService(corePoolSize: Int): ExecutorService {
                 val executor = ThreadPoolExecutor(
                         corePoolSize,
