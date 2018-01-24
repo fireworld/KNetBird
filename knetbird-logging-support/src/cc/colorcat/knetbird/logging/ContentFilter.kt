@@ -6,9 +6,9 @@ package cc.colorcat.knetbird.logging
  */
 interface ContentFilter {
 
-    fun filter(contentType: String): Boolean {
-        return contentType.contains("utf8", true)
-                || contentType.contains("text", true)
-                || contentType.contains("json", true)
+    fun filter(contentType: String): Boolean = TextReg.matches(contentType.toLowerCase())
+
+    private companion object {
+        val TextReg = ".*(charset|text|html|htm|json)+.*".toRegex()
     }
 }

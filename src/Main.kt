@@ -1,8 +1,8 @@
-import cc.colorcat.knetbird.*
+import cc.colorcat.knetbird.KNetBird
+import cc.colorcat.knetbird.MRequest
+import cc.colorcat.knetbird.StringParser
 import cc.colorcat.knetbird.logging.LoggingTailInterceptor
-import java.io.File
 import java.nio.charset.Charset
-import java.util.logging.Level
 import java.util.logging.Logger
 
 /**
@@ -11,7 +11,7 @@ import java.util.logging.Logger
  */
 fun main(args: Array<String>) {
     val log = Logger.getLogger("KNetBird")
-    val url = "http://www.baidu.com"
+    val url = "http://www.imooc.com/"
     val netBird = KNetBird.Builder(url)
             .enableGzip(true)
             .addTailInterceptor(LoggingTailInterceptor(charsetIfAbsent = Charset.forName("GBK")))
@@ -44,7 +44,9 @@ fun main(args: Array<String>) {
 //            })
 //            .build()
     val stringReq = MRequest.Builder(StringParser.create("gbk"))
-            .url("http://www.pconline.com.cn")
+            .path("/api/teacher")
+            .add("type", 4.toString())
+            .add("num", 30.toString())
             .listener(object : MRequest.Listener<String> {
                 override fun onStart() {
                 }
@@ -64,4 +66,7 @@ fun main(args: Array<String>) {
 //    netBird.send(fileReq)
 //    val test = CharArray(80) { '+' }.let { String(it) }
 //    println(test)
+//    val reg = ".*(charset|text|html|htm|json)+.*".toRegex()
+//    val test = "charsesoncharsettxtutftf8234shmjsofuTf8texjsocarset"
+//    println(test.matches(reg))
 }
