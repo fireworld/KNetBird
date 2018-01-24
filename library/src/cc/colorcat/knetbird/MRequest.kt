@@ -45,13 +45,13 @@ class MRequest<T> internal constructor(builder: Builder<T>) : Request(builder) {
 
     interface Listener<in T> {
 
-        fun onStart()
+        fun onStart() {}
 
         fun onSuccess(result: T)
 
-        fun onFailure(code: Int, msg: String)
+        fun onFailure(code: Int, msg: String) {}
 
-        fun onFinish()
+        fun onFinish() {}
     }
 
     class Builder<T> : Request.Builder {

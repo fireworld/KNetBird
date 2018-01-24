@@ -48,17 +48,8 @@ fun main(args: Array<String>) {
             .add("type", 4.toString())
             .add("num", 30.toString())
             .listener(object : MRequest.Listener<String> {
-                override fun onStart() {
-                }
-
                 override fun onSuccess(result: String) {
                     println(result)
-                }
-
-                override fun onFailure(code: Int, msg: String) {
-                }
-
-                override fun onFinish() {
                 }
             })
             .build()
