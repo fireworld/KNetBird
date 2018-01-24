@@ -251,12 +251,14 @@ open class Request protected constructor(builder: Builder) {
         }
 
         open fun replaceHeaders(headers: Headers): Builder {
+            checkHeader(headers)
             this._headers.clear()
             this._headers.addAll(headers.names(), headers.values())
             return this
         }
 
         open fun addHeader(headers: Headers): Builder {
+            checkHeader(headers)
             this._headers.addAll(headers.names(), headers.values())
             return this
         }
@@ -274,6 +276,7 @@ open class Request protected constructor(builder: Builder) {
         }
 
         open fun addAllHeader(names: List<String>, values: List<String>): Builder {
+            checkHeader(names, values)
             _headers.addAll(names, values)
             return this
         }

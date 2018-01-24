@@ -98,7 +98,7 @@ fun mutableHeadersOf(initCapacity: Int) = MutableHeaders(MutablePair(initCapacit
 internal fun checkHeader(name: String, value: String) {
     if (name.isEmpty()) throw  IllegalArgumentException("name is empty")
     for (c in name) {
-        if (c <= '\u001f' || c >= '\u007f') {
+        if (c <= '\u0020' || c >= '\u007f') {
             throw IllegalArgumentException("Unexpected char $c in header name: $name")
         }
     }
@@ -109,6 +109,20 @@ internal fun checkHeader(name: String, value: String) {
     }
 }
 
+internal fun checkHeader(names: List<String>, values: List<String>) {
+    if (names.size != values.size) {
+        throw IllegalArgumentException("names.size(${names.size}) != values.size(${values.size})")
+    }
+    for (index in names.indices) {
+        checkHeader(names[index], values[index])
+    }
+}
+
+internal fun checkHeader(headers: Headers) {
+    for ((name, value) in headers) {
+        checkHeader(name, value)
+    }
+}
 
 private val parametersComparator = Comparator<String> { str1, str2 -> str1.compareTo(str2) }
 
