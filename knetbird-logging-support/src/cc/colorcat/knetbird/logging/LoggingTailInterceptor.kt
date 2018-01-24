@@ -1,11 +1,8 @@
 package cc.colorcat.knetbird.logging
 
-import cc.colorcat.knetbird.FileBody
-import cc.colorcat.knetbird.Interceptor
-import cc.colorcat.knetbird.Level
-import cc.colorcat.knetbird.Response
+import cc.colorcat.knetbird.*
 import cc.colorcat.knetbird.internal.PairReader
-import cc.colorcat.knetbird.platform.Logger
+import cc.colorcat.knetbird.platform.Platform
 import java.io.IOException
 import java.nio.charset.Charset
 
@@ -14,37 +11,62 @@ import java.nio.charset.Charset
  * xx.ch@outlook.com
  */
 class LoggingTailInterceptor(
-        val logger: Logger,
-        val filter: TextFilter,
-        val charsetIfAbsent: Charset = Charsets.UTF_8
+        private val filter: ContentFilter = object : ContentFilter {},
+        private val charsetIfAbsent: Charset = Charsets.UTF_8
 ) : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        val request = chain.request
+        var response = chain.proceed(request)
 
-    private fun logPair(type: String, pair: PairReader, level: Level) {
-        for ((name, value) in pair) {
-            log("$type --> $name = $value", level)
+        synchronized(LoggingTailInterceptor.TAG) {
+            log(HALF_LINE + request.method.name + HALF_LINE, Level.DEBUG)
+            log("request url = ${request.url}", Level.DEBUG)
+            logPair("request header", request.headers, Level.DEBUG)
+            if (request.method.needBody()) {
+                logPair("request parameter", request.parameters, Level.DEBUG)
+                logFiles(request.fileBodies, Level.DEBUG)
+            }
+
+            log("response --> ${response.code} -- ${response.msg}", Level.INFO)
+            logPair("response header", response.headers, Level.INFO)
+            response.responseBody?.also {
+                it.contentType()?.apply {
+                    if (filter.filter(this)) {
+                        val bytes = it.bytes()
+                        val charset = it.charset() ?: charsetIfAbsent
+                        val content = String(bytes, charset)
+                        log("response content --> $content", Level.INFO)
+                        val newBody = ResponseBody.create(bytes, this, charset)
+                        response = response.newBuilder().responseBody(newBody).build()
+                    }
+                }
+            }
+            log(LINE, Level.INFO)
         }
-    }
-
-    private fun logFiles(fileBodies: List<FileBody>, level: Level) {
-        for (body in fileBodies) {
-            log("request file --> $body", level)
-        }
-    }
-
-    private fun log(msg: String, level: Level) {
-        logger.log(TAG, msg, level)
+        return response
     }
 
     private companion object {
         const val TAG = "KNetBird"
-        val LINE = buildLine(80, '-')
-        val HALF_LINE = buildLine(38, '-')
+        const val LINE = "--------------------------------------------------------------------------------"
+        const val HALF_LINE = "--------------------------------------"
 
-        private fun buildLine(count: Int, c: Char): String = CharArray(count) { c }.let { String(it) }
+        private fun logPair(type: String, pair: PairReader, level: Level) {
+            for ((name, value) in pair) {
+                log("$type --> $name = $value", level)
+            }
+        }
+
+        private fun logFiles(fileBodies: List<FileBody>, level: Level) {
+            for (body in fileBodies) {
+                log("request file --> $body", level)
+            }
+        }
+
+        private fun log(msg: String, level: Level) {
+            Platform.get().logger.log(TAG, msg, level)
+        }
     }
 }

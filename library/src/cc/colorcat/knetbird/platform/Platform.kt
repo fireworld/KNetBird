@@ -7,11 +7,11 @@ import cc.colorcat.knetbird.Connection
  * xx.ch@outlook.com
  */
 abstract class Platform {
-    internal companion object {
+    companion object {
         @Volatile
         internal var Instance: Platform? = null
 
-        internal fun get(): Platform {
+        fun get(): Platform {
             if (Platform.Instance == null) {
                 synchronized(Platform::class) {
                     if (Platform.Instance == null) {
