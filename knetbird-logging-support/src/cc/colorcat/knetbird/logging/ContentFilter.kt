@@ -9,6 +9,6 @@ interface ContentFilter {
     fun filter(contentType: String): Boolean = TextReg.matches(contentType.toLowerCase())
 
     private companion object {
-        val TextReg = ".*(charset|text|html|htm|json)+.*".toRegex()
+        val TextReg = ".*(charset|text|html|htm|json|urlencoded)+.*".toRegex()
     }
 }

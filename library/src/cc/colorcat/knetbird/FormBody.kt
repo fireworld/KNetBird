@@ -14,7 +14,6 @@ import java.io.OutputStream
 internal class FormBody private constructor(internal val parameters: Parameters) : RequestBody() {
     internal companion object {
         const val CONTENT_TYPE = "application/x-www-form-urlencoded"
-//        const val CONTENT_TYPE = "text/plain; charset=UTF-8"
 
         internal fun create(namesAndValues: Parameters, needEncode: Boolean = true): FormBody {
             if (!needEncode) {
