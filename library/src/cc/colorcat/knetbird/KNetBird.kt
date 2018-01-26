@@ -6,6 +6,7 @@ import cc.colorcat.knetbird.internal.toImmutableList
 import cc.colorcat.knetbird.platform.Platform
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.IOException
 import java.net.Proxy
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.LinkedBlockingDeque
@@ -50,10 +51,11 @@ class KNetBird(builder: Builder) : Call.Factory {
         return request.tag
     }
 
+    @Throws(IOException::class)
     fun <T> execute(request: MRequest<T>): T? {
         val response = newCall(request).execute()
         if (response.code == 200 && response.responseBody != null) {
-            request.parser.parse(response).data
+            return request.parser.parse(response).data
         }
         return null
     }
@@ -214,6 +216,11 @@ class KNetBird(builder: Builder) : Call.Factory {
 
         fun enableGzip(enabled: Boolean): Builder {
             this.gzipEnabled = enabled
+            return this
+        }
+
+        fun logLevel(level: Level): Builder {
+            this.logLevel = level
             return this
         }
 
