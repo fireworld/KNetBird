@@ -10,10 +10,8 @@ import java.nio.charset.Charset
  * Created by cxx on 18-1-23.
  * xx.ch@outlook.com
  */
-class LoggingTailInterceptor(
-        private val filter: ContentFilter = object : ContentFilter {},
-        private val charsetIfAbsent: Charset = Charsets.UTF_8
-) : Interceptor {
+open class LoggingTailInterceptor(private val charsetIfAbsent: Charset = Charsets.UTF_8) : Interceptor {
+    protected open val filter = ".*(charset|text|html|htm|json|urlencoded)+.*".toRegex()
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -33,7 +31,7 @@ class LoggingTailInterceptor(
             logPair("response header", response.headers, Level.INFO)
             response.responseBody?.also {
                 it.contentType()?.apply {
-                    if (filter.filter(this)) {
+                    if (contentFilter(this)) {
                         val bytes = it.bytes()
                         val charset = it.charset() ?: charsetIfAbsent
                         val content = String(bytes, charset)
@@ -47,6 +45,8 @@ class LoggingTailInterceptor(
         }
         return response
     }
+
+    protected open fun contentFilter(contentType: String): Boolean = filter.matches(contentType)
 
     private companion object {
         const val TAG = "KNetBird"

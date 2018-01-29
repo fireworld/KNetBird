@@ -108,6 +108,6 @@ open class HttpConnection : Connection {
         }
 
     open protected fun enableCache(cachePath: File?, cacheSize: Long) {
-        cacheEnabled = cachePath != null && cacheSize > 0
+        cacheEnabled = cachePath != null && cacheSize > 0L
     }
 }
