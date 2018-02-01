@@ -46,6 +46,7 @@ open class Request protected constructor(builder: Builder) {
 
         other as Request
 
+        if (boundary != other.boundary) return false
         if (url != other.url) return false
         if (path != other.path) return false
         if (method != other.method) return false
@@ -54,7 +55,6 @@ open class Request protected constructor(builder: Builder) {
         if (headers != other.headers) return false
         if (downloadListener != other.downloadListener) return false
         if (tag != other.tag) return false
-        if (boundary != other.boundary) return false
 
         return true
     }
@@ -257,7 +257,7 @@ open class Request protected constructor(builder: Builder) {
             return this
         }
 
-        open fun addHeader(headers: Headers): Builder {
+        open fun addHeaders(headers: Headers): Builder {
             checkHeader(headers)
             this._headers.addAll(headers.names(), headers.values())
             return this

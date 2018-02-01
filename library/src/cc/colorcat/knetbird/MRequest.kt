@@ -39,7 +39,7 @@ class MRequest<T> internal constructor(builder: Builder<T>) : Request(builder) {
     }
 
     override fun toString(): String {
-        return "MRequest(parser=$parser, listener=$listener)"
+        return "MRequest(url='$url', path='$path', method=$method, parameters=$parameters, fileBodies=$fileBodies, headers=$headers, downloadListener=$downloadListener, tag=$tag, boundary='$boundary', freeze=$freeze, parser=$parser, listener=$listener)"
     }
 
 
@@ -191,8 +191,8 @@ class MRequest<T> internal constructor(builder: Builder<T>) : Request(builder) {
             return this
         }
 
-        override fun addHeader(headers: Headers): Builder<T> {
-            super.addHeader(headers)
+        override fun addHeaders(headers: Headers): Builder<T> {
+            super.addHeaders(headers)
             return this
         }
 
