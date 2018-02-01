@@ -19,7 +19,7 @@ import javax.net.ssl.SSLSocketFactory
  * Created by cxx on 2018/1/19.
  * xx.ch@outlook.com
  */
-class KNetBird(builder: Builder) : Call.Factory {
+class KNetBird internal constructor(builder: Builder) : Call.Factory {
     val platform = builder.platform
     val baseUrl = builder.baseUrl
     val headInterceptors = builder.headInterceptors.toImmutableList()
