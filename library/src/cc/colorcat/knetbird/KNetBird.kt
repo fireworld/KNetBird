@@ -70,22 +70,39 @@ class KNetBird internal constructor(builder: Builder) : Call.Factory {
 
     class Builder {
         internal var platform: Platform
+            private set
         internal var baseUrl: String
+            private set
         internal var headInterceptors: MutableList<Interceptor>
+            private set
         internal var tailInterceptors: MutableList<Interceptor>
+            private set
         internal var executor: ExecutorService?
+            private set
         internal var dispatcher: Dispatcher
+            private set
         internal var connection: Connection
+            private set
         internal var proxy: Proxy?
+            private set
         internal var sslSocketFactory: SSLSocketFactory?
+            private set
         internal var hostnameVerifier: HostnameVerifier?
+            private set
         internal var cacheSize: Long
+            private set
         internal var cachePath: File?
+            private set
         internal var maxRunning: Int
+            private set
         internal var readTimeOut: Int
+            private set
         internal var connectTimeOut: Int
+            private set
         internal var gzipEnabled: Boolean
+            private set
         internal var logLevel: Level
+            private set
 
         constructor(baseUrl: String) {
             this.platform = Platform.findPlatform()
