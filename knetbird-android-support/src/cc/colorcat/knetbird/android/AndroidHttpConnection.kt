@@ -14,7 +14,7 @@ class AndroidHttpConnection : HttpConnection() {
     override fun clone(): Connection = AndroidHttpConnection()
 
     override fun enableCache(cachePath: File?, cacheSize: Long) {
-        if (cacheSize > 0 && cachePath != null) {
+        if (cachePath != null && cacheSize > 0L) {
             if (!cacheEnabled) {
                 try {
                     var cache: HttpResponseCache? = HttpResponseCache.getInstalled()
