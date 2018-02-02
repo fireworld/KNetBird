@@ -18,7 +18,7 @@ open class Headers internal constructor(protected open val pair: Pair) : PairRea
 
     fun contentType() = pair.value(Headers.CONTENT_TYPE)
 
-    fun contentLength() = pair.value(CONTENT_LENGTH)?.toLong() ?: -1L
+    fun contentLength() = pair.value(Headers.CONTENT_LENGTH)?.toLong() ?: -1L
 
     fun charset() = parseCharset(pair.value(Headers.CONTENT_TYPE))
 
